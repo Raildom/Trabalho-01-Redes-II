@@ -216,55 +216,9 @@ class AnalisadorResultados:
         plt.close()
         print("Gráfico de escalabilidade salvo: analise_escalabilidade.png")
 
-    def gerar_relatorio(self):
-        #Gera relatório de análise baseado no CSV
-        if self.df is None or self.df.empty:
-            print("Nenhum dado disponível para relatório")
-            return
-        
-        relatorio = []
-        relatorio.append("RELATÓRIO DE ANÁLISE DE PERFORMANCE")
-        relatorio.append(f"Data: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        relatorio.append(f"Registros analisados: {len(self.df)}")
-        relatorio.append("")
-        
-        #Análise por cenário
-        for cenario in ['rapido', 'medio', 'lento']:
-            dados_cenario = self.df[self.df['cenario'] == cenario]
-            if not dados_cenario.empty:
-                relatorio.append(f"CENÁRIO {cenario.upper()}")
-                
-                for num_clientes in sorted(dados_cenario['num_clientes'].unique()):
-                    dados_seq = dados_cenario[(dados_cenario['servidor'] == 'sequencial') & 
-                                             (dados_cenario['num_clientes'] == num_clientes)]
-                    dados_conc = dados_cenario[(dados_cenario['servidor'] == 'concorrente') & 
-                                              (dados_cenario['num_clientes'] == num_clientes)]
-                    
-                    if not dados_seq.empty and not dados_conc.empty:
-                        throughput_seq = dados_seq['throughput'].iloc[0]
-                        throughput_conc = dados_conc['throughput'].iloc[0]
-                        
-                        relatorio.append(f"  {num_clientes} clientes:")
-                        relatorio.append(f"    Sequencial: {throughput_seq:.2f} req/s")
-                        relatorio.append(f"    Concorrente: {throughput_conc:.2f} req/s")
-                        
-                        if throughput_seq > 0:
-                            melhoria = ((throughput_conc - throughput_seq) / throughput_seq) * 100
-                            relatorio.append(f"    Melhoria: {melhoria:+.1f}%")
-                
-                relatorio.append("")
-        
-        #Salvar relatório
-        os.makedirs('resultados', exist_ok=True)
-        with open('resultados/relatorio_analise.txt', 'w', encoding='utf-8') as f:
-            f.write('\n'.join(relatorio))
-        
-        print("Relatório salvo em resultados/relatorio_analise.txt")
-
 if __name__ == "__main__":
     analisador = AnalisadorResultados()
     analisador.gerar_todos_graficos()
-    analisador.gerar_relatorio()
     
     print("\nGráficos gerados com sucesso!")
     print("Arquivos criados:")
@@ -272,4 +226,3 @@ if __name__ == "__main__":
     print("  - comparacao_tempo_resposta.png")
     print("  - analise_taxa_sucesso.png")
     print("  - analise_escalabilidade.png")
-    print("  - relatorio_analise.txt")
