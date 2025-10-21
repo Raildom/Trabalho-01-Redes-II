@@ -60,6 +60,12 @@ class ServidorWebSequencial:
             #Verifica o cabeçalho customizado
             id_customizado = cabecalhos.get('X-Custom-ID', '')
             
+            # Validação obrigatória do X-Custom-ID
+            if not id_customizado:
+                resposta = self.gerar_resposta_erro(400, "Bad Request - X-Custom-ID obrigatório", id_customizado)
+                socket_cliente.send(resposta.encode('utf-8'))
+                return
+            
             self.contador_requisicoes += 1
             
             #Gera resposta baseada no método e path

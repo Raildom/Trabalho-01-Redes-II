@@ -86,6 +86,12 @@ class ServidorWebConcorrente:
             #Verifica o cabeçalho customizado
             id_customizado = cabecalhos.get('X-Custom-ID', '')
             
+            # Validação obrigatória do X-Custom-ID
+            if not id_customizado:
+                resposta_erro = self.gerar_resposta_erro(400, "Bad Request - X-Custom-ID obrigatório", id_conexao, id_customizado)
+                socket_cliente.send(resposta_erro.encode('utf-8'))
+                return
+            
             with self.lock:
                 self.contador_requisicoes += 1
                 requisicao_atual = self.contador_requisicoes
@@ -101,7 +107,8 @@ class ServidorWebConcorrente:
             
         except Exception as e:
             print(f"Erro ao processar requisição na conexão {id_conexao}: {e}")
-            resposta_erro = self.gerar_resposta_erro(500, "Erro Interno do Servidor", id_conexao)
+            id_customizado = ""  #Em caso de erro, pode não ter sido extraído
+            resposta_erro = self.gerar_resposta_erro(500, "Erro Interno do Servidor", id_conexao, id_customizado)
             socket_cliente.send(resposta_erro.encode('utf-8'))
         finally:
             socket_cliente.close()
