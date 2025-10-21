@@ -292,13 +292,13 @@ class TestadorAutomatizado:
                                     f.write(f"    - Requisicoes enviadas: {total}\n")
                                     f.write(f"    - Sucessos: {sucessos} | Falhas: {falhas} | Taxa: {taxa_sucesso:5.1f}%\n")
                                     f.write(f"    - Throughput: {throughput:6.2f} req/s\n")
-                                    f.write(f"    - Tempo medio de resposta: {tempo_medio:6.1f}ms\n")
+                                    f.write(f"    - Tempo médio de resposta: {tempo_medio:6.1f}ms\n")
                                     f.write(f"    - Tempo de execucao total: {resultado['tempo_total']:.2f} segundos\n")
                                     
                                     if sucessos > 0:
                                         f.write(f"    - Detalhes de tempo: Min {tempo_min:5.1f}ms | Max {tempo_max:6.1f}ms\n")
                                         
-                                        # Avaliacao qualitativa
+                                        # Avaliação qualitativa
                                         if throughput >= 50:
                                             avaliacao = "EXCELENTE"
                                         elif throughput >= 20:
@@ -310,7 +310,7 @@ class TestadorAutomatizado:
                                         else:
                                             avaliacao = "BAIXO"
                                         
-                                        f.write(f"    - Avaliacao de desempenho: {avaliacao}\n")
+                                        f.write(f"    - Avaliação de desempenho: {avaliacao}\n")
                                     else:
                                         f.write(f"    - ERRO: Todas as requisicoes falharam\n")
                                     
@@ -326,7 +326,7 @@ class TestadorAutomatizado:
                         
                         if tempos_servidor:
                             tempo_medio_geral = sum(tempos_servidor) / len(tempos_servidor) * 1000
-                            f.write(f"  - Tempo medio geral: {tempo_medio_geral:.1f}ms\n")
+                            f.write(f"  - Tempo médio geral: {tempo_medio_geral:.1f}ms\n")
                             
                             # Classificacao geral
                             if taxa_geral >= 99:
@@ -342,13 +342,13 @@ class TestadorAutomatizado:
                             
                             f.write(f"  - Classificacao: {classificacao}\n")
             
-            # Comparacao detalhada entre servidores
+            # Comparação detalhada entre servidores
             f.write(f"\n{'='*80}\n")
-            f.write("                  COMPARACAO DETALHADA ENTRE SERVIDORES\n")
+            f.write("                  COMPARAÇÃO DETALHADA ENTRE SERVIDORES\n")
             f.write(f"{'='*80}\n")
             
             if 'sequencial' in self.resultados and 'concorrente' in self.resultados:
-                # Cabecalho da tabela de comparacao
+                # Cabeçalho da tabela de comparação
                 f.write(f"\nFormato: [Cenario] Clientes -> Sequencial vs Concorrente (Diferenca)\n")
                 f.write(f"{'-'*80}\n")
                 
@@ -393,8 +393,8 @@ class TestadorAutomatizado:
                                     conc_tempo_medio = 0
                                 
                                 f.write(f"  {num_clientes:2d} clientes simultaneos:\n")
-                                f.write(f"    + Sequencial:  {seq_throughput:6.2f} req/s | Tempo medio: {seq_tempo_medio:6.1f}ms\n")
-                                f.write(f"    + Concorrente: {conc_throughput:6.2f} req/s | Tempo medio: {conc_tempo_medio:6.1f}ms\n")
+                                f.write(f"    + Sequencial:  {seq_throughput:6.2f} req/s | Tempo médio: {seq_tempo_medio:6.1f}ms\n")
+                                f.write(f"    + Concorrente: {conc_throughput:6.2f} req/s | Tempo médio: {conc_tempo_medio:6.1f}ms\n")
                                 
                                 if seq_throughput > 0 and conc_throughput > 0:
                                     melhoria_throughput = ((conc_throughput - seq_throughput) / seq_throughput) * 100
@@ -426,7 +426,7 @@ class TestadorAutomatizado:
                                     else:
                                         f.write(f"SEQUENCIAL MUITO MAIS RAPIDO (+{abs(melhoria_tempo):5.1f}%)\n")
                                 else:
-                                    f.write(f"    > ERRO: Nao foi possivel comparar (falhas nas requisicoes)\n")
+                                    f.write(f"    > ERRO: Não foi possível comparar (falhas nas requisições)\n")
                                 
                                 f.write(f"\n")
                         
@@ -587,7 +587,7 @@ class TestadorProjeto:
             configuracao_rede = "76.01.0.0/16"
             ip_servidor = "76.01.0.10"
             print(f"\n[CONFIGURAÇÃO DE REDE]")
-            print(f"  Ambiente:           Docker Containers")
+            print(f"  Ambiente:           Docker Contêineres")
             print(f"  Subnet configurada: {configuracao_rede}")
             print(f"  IP base servidor:   {ip_servidor}")
             print(f"  ID Personalizado:   {ID_CUSTOMIZADO}")

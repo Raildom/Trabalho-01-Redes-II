@@ -18,7 +18,7 @@ class ProjetoRedes:
         print("")
     
     def verificar_docker(self):
-        """Verifica se o Docker está rodando"""
+        #Verifica se o Docker está rodando
         try:
             subprocess.run(['docker', 'info'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
             return True
@@ -28,7 +28,7 @@ class ProjetoRedes:
             return False
     
     def iniciar_conteineres(self):
-        """Constrói e inicia os contêineres"""
+        #Constrói e inicia os contêineres
         print("=== Construindo e iniciando contêineres ===")
         
         if not os.path.exists('docker'):
@@ -43,7 +43,7 @@ class ProjetoRedes:
             result = subprocess.run(['docker-compose', 'up', '--build', '-d'], cwd='docker', check=True)
             
             print("Aguardando contêineres iniciarem...")
-            time.sleep(5)
+            time.sleep(2)
             
             #Verifica se os contêineres estão rodando
             result = subprocess.run(['docker-compose', 'ps'], cwd='docker', capture_output=True, text=True)
@@ -60,34 +60,10 @@ class ProjetoRedes:
             print(f"[ERRO] Falha ao iniciar contêineres: {e}")
             return False
     
-    def testar_conectividade(self):
-        """Executa testes de conectividade"""
-        print("")
-        print("=== Testando conectividade dos servidores ===")
-        
-        #Verifica se o contêiner está rodando
-        try:
-            result = subprocess.run(['docker', 'ps'], capture_output=True, text=True)
-            if 'cliente_teste' not in result.stdout:
-                print("[ERRO] Contêiner de teste não está rodando.")
-                print("Execute primeiro a opção 1 (Iniciar contêineres)")
-                return False
-        except subprocess.CalledProcessError:
-            print("[ERRO] Erro ao verificar contêineres")
-            return False
-        
-        #Executa os testes com tratamento de erro
-        try:
-            subprocess.run(['docker', 'exec', 'cliente_teste', 'python3', 'testes/teste_completo.py'], check=True)
-            print("[SUCESSO] Testes de conectividade concluídos")
-            return True
-        except subprocess.CalledProcessError:
-            print("[ERRO] Falha nos testes de conectividade")
-            print("Verifique se os servidores estão funcionando corretamente")
-            return False
+
     
     def executar_testes_completos(self):
-        """Executa testes completos"""
+        #Executa testes completos
         print("")
         print("=== Executando testes completos ===")
         print("Isso pode demorar alguns minutos...")
@@ -114,7 +90,7 @@ class ProjetoRedes:
             return False
     
     def gerar_analises(self):
-        """Gera análises e gráficos"""
+        #Gera análises e gráficos
         print("")
         print("=== Gerando análises e gráficos ===")
         
@@ -129,24 +105,24 @@ class ProjetoRedes:
                 print(f"[ERRO] Falha ao gerar análises: {e}")
                 return False
         else:
-            #Tenta copiar do container se não existir localmente
+            #Tenta copiar do contêiner se não existir localmente
             try:
                 subprocess.run(['docker', 'exec', 'cliente_teste', 'test', '-f', '/app/resultados/resultados_completos.csv'], check=True)
                 subprocess.run(['docker', 'cp', 'cliente_teste:/app/resultados/', './'], check=True)
                 
                 #Executa a análise localmente
                 subprocess.run(['python3', 'testes/analisar_resultados.py'], check=True)
-                print("[SUCESSO] Análises e gráficos gerados a partir do container")
+                print("[SUCESSO] Análises e gráficos gerados a partir do contêiner")
                 return True
                 
             except subprocess.CalledProcessError:
                 print("[AVISO] Nenhum resultado encontrado para análise.")
-                print("Execute primeiro os testes com a opção 3 (Executar testes completos)")
-                print("ou use a opção 9 (Executar tudo) para executar testes e análises automaticamente.")
+                print("Execute primeiro os testes com a opção 2 (Executar testes completos)")
+                print("ou use a opção 8 (Executar tudo) para executar testes e análises automaticamente.")
                 return False
     
     def parar_conteineres(self):
-        """Para contêineres"""
+        #Para contêineres
         print("")
         print("=== Parando contêineres ===")
         
@@ -159,7 +135,7 @@ class ProjetoRedes:
             return False
     
     def limpar_ambiente(self):
-        """Limpa ambiente Docker"""
+        #Limpa ambiente Docker
         print("")
         print("=== Limpando ambiente ===")
         
@@ -173,7 +149,7 @@ class ProjetoRedes:
             return False
     
     def mostrar_logs(self):
-        """Mostra logs dos contêineres"""
+        #Mostra logs dos contêineres
         print("")
         print("=== Logs dos contêineres ===")
         
@@ -196,10 +172,10 @@ class ProjetoRedes:
             return False
     
     def entrar_conteiner_teste(self):
-        """Entra no contêiner de teste"""
+        #Entra no contêiner de teste
         print("")
         print("=== Entrando no contêiner de teste ===")
-        print("Bem vindo ao contêiner do cliente!")
+        print("Bem-vindo ao contêiner do cliente!")
         print("Para sair, digite 'exit'")
         
         #Verifica se o contêiner está rodando
@@ -221,27 +197,23 @@ class ProjetoRedes:
             return False
     
     def mostrar_menu(self):
-        """Mostra menu principal"""
+        #Mostra menu principal
         print("")
         print("==== MENU PRINCIPAL ====")
         print("1) Iniciar contêineres")
-        print("2) Testar conectividade")
-        print("3) Executar testes completos")
-        print("4) Gerar análises e gráficos")
-        print("5) Mostrar logs")
-        print("6) Entrar no contêiner de teste")
-        print("7) Parar contêineres")
-        print("8) Limpar ambiente")
-        print("9) Executar tudo (início ao fim)")
+        print("2) Executar testes completos")
+        print("3) Gerar análises e gráficos")
+        print("4) Mostrar logs")
+        print("5) Entrar no contêiner de teste")
+        print("6) Parar contêineres")
+        print("7) Limpar ambiente")
+        print("8) Executar tudo (início ao fim)")
         print("0) Sair")
         print("")
     
     def executar_tudo(self):
-        """Executa todo o fluxo do projeto"""
+        #Executa todo o fluxo do projeto
         if not self.iniciar_conteineres():
-            return False
-        
-        if not self.testar_conectividade():
             return False
         
         print("")
@@ -258,12 +230,10 @@ class ProjetoRedes:
         return True
     
     def executar_comando_linha(self, comando):
-        """Executa comando da linha de comando"""
+        #Executa comando da linha de comando
         comandos = {
             'start': self.iniciar_conteineres,
             'iniciar': self.iniciar_conteineres,
-            'test': self.testar_conectividade,
-            'testar': self.testar_conectividade,
             'full-test': self.executar_testes_completos,
             'teste-completo': self.executar_testes_completos,
             'analyze': self.gerar_analises,
@@ -282,11 +252,11 @@ class ProjetoRedes:
             return comandos[comando]()
         else:
             print(f"Opção inválida: {comando}")
-            print("Opções: iniciar, testar, teste-completo, analisar, parar, limpar, logs, shell, tudo")
+            print("Opções: iniciar, teste-completo, analisar, parar, limpar, logs, shell, tudo")
             return False
     
     def menu_interativo(self):
-        """Menu interativo principal"""
+        #Menu interativo principal
         while True:
             self.mostrar_menu()
             try:
@@ -295,20 +265,18 @@ class ProjetoRedes:
                 if escolha == '1':
                     self.iniciar_conteineres()
                 elif escolha == '2':
-                    self.testar_conectividade()
-                elif escolha == '3':
                     self.executar_testes_completos()
-                elif escolha == '4':
+                elif escolha == '3':
                     self.gerar_analises()
-                elif escolha == '5':
+                elif escolha == '4':
                     self.mostrar_logs()
-                elif escolha == '6':
+                elif escolha == '5':
                     self.entrar_conteiner_teste()
-                elif escolha == '7':
+                elif escolha == '6':
                     self.parar_conteineres()
-                elif escolha == '8':
+                elif escolha == '7':
                     self.limpar_ambiente()
-                elif escolha == '9':
+                elif escolha == '8':
                     self.executar_tudo()
                 elif escolha == '0':
                     self.parar_conteineres()
@@ -342,7 +310,7 @@ def main():
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(description='Gerenciador do Projeto Redes II')
         parser.add_argument('comando', choices=[
-            'start', 'iniciar', 'test', 'testar', 'full-test', 'teste-completo',
+            'start', 'iniciar', 'full-test', 'teste-completo',
             'analyze', 'analisar', 'stop', 'parar', 'clean', 'limpar', 
             'logs', 'shell', 'all', 'tudo'
         ], help='Comando para executar')
