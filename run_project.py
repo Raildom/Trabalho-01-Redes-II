@@ -7,14 +7,41 @@ import os
 import time
 import argparse
 
+#Classe para cores no terminal
+class Cores:
+    VERDE = '\033[92m'    # Verde para sucesso
+    VERMELHO = '\033[91m' # Vermelho para erro
+    AMARELO = '\033[93m'  # Amarelo para aviso
+    AZUL = '\033[94m'     # Azul para informação
+    MAGENTA = '\033[95m'  # Magenta para destaque
+    CIANO = '\033[96m'    # Ciano para título
+    RESET = '\033[0m'     # Reset para cor normal
+    NEGRITO = '\033[1m'   # Negrito
+
+    @staticmethod
+    def sucesso(texto):
+        return f"{Cores.VERDE}[SUCESSO]{Cores.RESET} {texto}"
+    
+    @staticmethod
+    def erro(texto):
+        return f"{Cores.VERMELHO}[ERRO]{Cores.RESET} {texto}"
+    
+    @staticmethod
+    def aviso(texto):
+        return f"{Cores.AMARELO}[AVISO]{Cores.RESET} {texto}"
+    
+    @staticmethod
+    def info(texto):
+        return f"{Cores.AZUL}[INFO]{Cores.RESET} {texto}"
+
 class ProjetoRedes:
     def __init__(self):
         self.info_projeto()
     
     def info_projeto(self):
-        print("=== Projeto Redes II - Servidor Web Sequencial vs Concorrente ===")
-        print("Matrícula: 20239057601")
-        print("Subnet configurada: 76.1.0.0/16")
+        print(f"{Cores.CIANO}{Cores.NEGRITO}=== Projeto Redes II - Servidor Web Sequencial vs Concorrente ==={Cores.RESET}")
+        print(f"{Cores.AZUL}Matrícula: 20239057601{Cores.RESET}")
+        print(f"{Cores.AZUL}Subnet configurada: 76.1.0.0/16{Cores.RESET}")
         print("")
     
     def verificar_docker(self):
@@ -23,7 +50,7 @@ class ProjetoRedes:
             subprocess.run(['docker', 'info'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
             return True
         except (subprocess.CalledProcessError, FileNotFoundError):
-            print("[ERRO] Docker não está rodando ou não está instalado")
+            print(Cores.erro("Docker não está rodando ou não está instalado"))
             print("Por favor, inicie o Docker e tente novamente")
             return False
     
@@ -32,7 +59,7 @@ class ProjetoRedes:
         print("=== Construindo e iniciando contêineres ===")
         
         if not os.path.exists('docker'):
-            print("[ERRO] Diretório 'docker' não encontrado")
+            print(Cores.erro("Diretório 'docker' não encontrado"))
             return False
         
         try:
@@ -48,16 +75,16 @@ class ProjetoRedes:
             #Verifica se os contêineres estão rodando
             result = subprocess.run(['docker-compose', 'ps'], cwd='docker', capture_output=True, text=True)
             if 'Up' in result.stdout:
-                print("[SUCESSO] Contêineres iniciados com sucesso")
+                print(Cores.sucesso("Contêineres iniciados com sucesso"))
                 print(result.stdout)
                 return True
             else:
-                print("[ERRO] Erro ao iniciar contêineres")
+                print(Cores.erro("Erro ao iniciar contêineres"))
                 subprocess.run(['docker-compose', 'logs'], cwd='docker')
                 return False
                 
         except subprocess.CalledProcessError as e:
-            print(f"[ERRO] Falha ao iniciar contêineres: {e}")
+            print(Cores.erro(f"Falha ao iniciar contêineres: {e}"))
             return False
     
 
@@ -72,20 +99,20 @@ class ProjetoRedes:
         try:
             result = subprocess.run(['docker', 'ps'], capture_output=True, text=True)
             if 'cliente_teste' not in result.stdout:
-                print("[ERRO] Contêiner de teste não está rodando.")
+                print(Cores.erro("Contêiner de teste não está rodando."))
                 print("Execute primeiro a opção 1 (Iniciar contêineres)")
                 return False
         except subprocess.CalledProcessError:
-            print("[ERRO] Erro ao verificar contêineres")
+            print(Cores.erro("Erro ao verificar contêineres"))
             return False
         
         #Executa os testes completos com tratamento de erro
         try:
             subprocess.run(['docker', 'exec', 'cliente_teste', 'python3', 'testes/teste_completo.py', '--completo'], check=True)
-            print("[SUCESSO] Testes completos concluídos")
+            print(Cores.sucesso("Testes completos concluídos"))
             return True
         except subprocess.CalledProcessError:
-            print("[ERRO] Falha nos testes completos")
+            print(Cores.erro("Falha nos testes completos"))
             print("Verifique os logs para mais detalhes")
             return False
     
@@ -99,10 +126,10 @@ class ProjetoRedes:
             try:
                 #Executa a análise localmente
                 subprocess.run(['python3', 'testes/analisar_resultados.py'], check=True)
-                print("[SUCESSO] Análises e gráficos gerados")
+                print(Cores.sucesso("Análises e gráficos gerados"))
                 return True
             except subprocess.CalledProcessError as e:
-                print(f"[ERRO] Falha ao gerar análises: {e}")
+                print(Cores.erro(f"Falha ao gerar análises: {e}"))
                 return False
         else:
             #Tenta copiar do contêiner se não existir localmente
@@ -112,11 +139,11 @@ class ProjetoRedes:
                 
                 #Executa a análise localmente
                 subprocess.run(['python3', 'testes/analisar_resultados.py'], check=True)
-                print("[SUCESSO] Análises e gráficos gerados a partir do contêiner")
+                print(Cores.sucesso("Análises e gráficos gerados a partir do contêiner"))
                 return True
                 
             except subprocess.CalledProcessError:
-                print("[AVISO] Nenhum resultado encontrado para análise.")
+                print(Cores.aviso("Nenhum resultado encontrado para análise."))
                 print("Execute primeiro os testes com a opção 2 (Executar testes completos)")
                 print("ou use a opção 8 (Executar tudo) para executar testes e análises automaticamente.")
                 return False
@@ -128,10 +155,10 @@ class ProjetoRedes:
         
         try:
             subprocess.run(['docker-compose', 'down'], cwd='docker', check=True)
-            print("[SUCESSO] Contêineres parados")
+            print(Cores.sucesso("Contêineres parados"))
             return True
         except subprocess.CalledProcessError as e:
-            print(f"[ERRO] Falha ao parar contêineres: {e}")
+            print(Cores.erro(f"Falha ao parar contêineres: {e}"))
             return False
     
     def limpar_ambiente(self):
@@ -142,10 +169,10 @@ class ProjetoRedes:
         try:
             subprocess.run(['docker-compose', 'down', '--volumes', '--remove-orphans'], cwd='docker')
             subprocess.run(['docker', 'system', 'prune', '-f'])
-            print("[SUCESSO] Ambiente limpo")
+            print(Cores.sucesso("Ambiente limpo"))
             return True
         except subprocess.CalledProcessError as e:
-            print(f"[ERRO] Falha ao limpar ambiente: {e}")
+            print(Cores.erro(f"Falha ao limpar ambiente: {e}"))
             return False
     
     def mostrar_logs(self):
@@ -157,11 +184,11 @@ class ProjetoRedes:
         try:
             result = subprocess.run(['docker-compose', 'ps'], cwd='docker', capture_output=True, text=True)
             if 'Up' not in result.stdout:
-                print("[AVISO] Contêineres não estão rodando.")
+                print(Cores.aviso("Contêineres não estão rodando."))
                 print("Execute primeiro a opção 1 (Iniciar contêineres)")
                 return False
         except subprocess.CalledProcessError:
-            print("[ERRO] Erro ao verificar contêineres")
+            print(Cores.erro("Erro ao verificar contêineres"))
             return False
         
         try:
@@ -193,13 +220,13 @@ class ProjetoRedes:
             subprocess.run(['docker', 'exec', '-it', 'cliente_teste', 'bash'])
             return True
         except subprocess.CalledProcessError as e:
-            print(f"[ERRO] Falha ao entrar no contêiner: {e}")
+            print(Cores.erro(f"Falha ao entrar no contêiner: {e}"))
             return False
     
     def mostrar_menu(self):
         #Mostra menu principal
         print("")
-        print("==== MENU PRINCIPAL ====")
+        print(f"{Cores.CIANO}{Cores.NEGRITO}==== MENU PRINCIPAL ===={Cores.RESET}")
         print("1) Iniciar contêineres")
         print("2) Executar testes completos")
         print("3) Gerar análises e gráficos")

@@ -86,7 +86,7 @@ class ServidorWebConcorrente:
             #Verifica o cabeçalho customizado
             id_customizado = cabecalhos.get('X-Custom-ID', '')
             
-            # Validação obrigatória do X-Custom-ID
+            #Validação obrigatória do X-Custom-ID
             if not id_customizado:
                 resposta_erro = self.gerar_resposta_erro(400, "Bad Request - X-Custom-ID obrigatório", id_conexao, id_customizado)
                 socket_cliente.send(resposta_erro.encode('utf-8'))

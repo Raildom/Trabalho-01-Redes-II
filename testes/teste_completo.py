@@ -1,7 +1,19 @@
 #!/usr/bin/env python3
 
-#Teste Completo do Projeto Redes II
-#Arquivo único para testar servidores sequencial e concorrente
+#Teste Completo do Projeto Re# ============================================================================
+#CONFIGURACOES DE TESTE
+#============================================================================
+
+#Quantidades de clientes simultaneos para testar (altere aqui)
+clientes_teste = [1, 2]
+
+#Numero de requisicoes por cliente em cada teste (altere aqui)  
+requisicoes_por_cliente = 2
+
+#Numero de execucoes para cada teste (para calcular media e desvio padrao)
+execucoes_por_teste = 2
+
+#Configuracoes para teste de concorrencia simpleso único para testar servidores sequencial e concorrente
 #Consolida funcionalidades de teste_cliente.py e testes_automatizados.py
 
 import sys
@@ -13,6 +25,33 @@ import threading
 import statistics
 from datetime import datetime
 
+#Classe para cores no terminal
+class Cores:
+    VERDE = '\033[92m'    # Verde para sucesso
+    VERMELHO = '\033[91m' # Vermelho para erro
+    AMARELO = '\033[93m'  # Amarelo para aviso
+    AZUL = '\033[94m'     # Azul para informação
+    MAGENTA = '\033[95m'  # Magenta para destaque
+    CIANO = '\033[96m'    # Ciano para título
+    RESET = '\033[0m'     # Reset para cor normal
+    NEGRITO = '\033[1m'   # Negrito
+
+    @staticmethod
+    def sucesso(texto):
+        return f"{Cores.VERDE}[SUCESSO]{Cores.RESET} {texto}"
+    
+    @staticmethod
+    def erro(texto):
+        return f"{Cores.VERMELHO}[ERRO]{Cores.RESET} {texto}"
+    
+    @staticmethod
+    def aviso(texto):
+        return f"{Cores.AMARELO}[AVISO]{Cores.RESET} {texto}"
+    
+    @staticmethod
+    def info(texto):
+        return f"{Cores.AZUL}[INFO]{Cores.RESET} {texto}"
+
 #Adicionar diretório src ao path (um nível acima da pasta testes)
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
@@ -20,28 +59,28 @@ try:
     from cliente import ClienteHTTP
     from configuracao import ID_CUSTOMIZADO, PORTA_SERVIDOR
 except ImportError as e:
-    print(f"[ERRO] Erro ao importar módulos: {e}")
+    print(Cores.erro(f"Erro ao importar módulos: {e}"))
     print("Certifique-se de estar no diretório correto do projeto")
     sys.exit(1)
 
-# ============================================================================
-# CONFIGURACOES DE TESTE - ALTERE AQUI CONFORME NECESSARIO
-# ============================================================================
+#============================================================================
+#CONFIGURACOES DE TESTE
+#============================================================================
 
-# Quantidades de clientes simultaneos para testar (altere aqui)
-clientes_teste = [1]
+#Quantidades de clientes simultaneos para testar (altere aqui)
+clientes_teste = [1, 2, 4, 8]
 
-# Numero de requisicoes por cliente em cada teste (altere aqui)  
+#Numero de requisicoes por cliente em cada teste (altere aqui)  
 requisicoes_por_cliente = 2
 
-# Numero de execucoes para cada teste (para calcular media e desvio padrao)
-execucoes_por_teste = 2
+#Numero de execucoes para cada teste (para calcular media e desvio padrao)
+execucoes_por_teste = 1
 
-# Configuracoes para teste de concorrencia simples
+#Configuracoes para teste de concorrencia simples
 concorrencia_clientes = 5
 concorrencia_requisicoes = 3
 
-# ============================================================================
+#============================================================================
 
 class TestadorCarga:
     #Classe para executar testes de carga e concorrencia
@@ -119,7 +158,7 @@ class TestadorAutomatizado:
         ]
         
         #Configurações de teste (usando valores das configurações do topo)
-        # Para alterar: modifique as variáveis no topo do arquivo
+        #Para alterar: modifique as variáveis no topo do arquivo
         
         for tipo_servidor, ip_servidor in servidores.items():
             self.resultados[tipo_servidor] = {}
@@ -128,7 +167,7 @@ class TestadorAutomatizado:
                 self.resultados[tipo_servidor][cenario['nome']] = {}
                 
                 for num_clientes in clientes_teste:
-                    # Realizar multiplas execucoes para calcular estatisticas
+                    #Realizar multiplas execucoes para calcular estatisticas
                     execucoes_resultados = []
                     
                     for execucao in range(execucoes_por_teste):
@@ -141,10 +180,10 @@ class TestadorAutomatizado:
                         )
                         execucoes_resultados.append(resultado)
                         
-                        # Pequena pausa entre execucoes para evitar sobrecarga
+#Pequena pausa entre execucoes para evitar sobrecarga
                         time.sleep(0.5)
                     
-                    # Calcular estatisticas das multiplas execucoes
+#Calcular estatisticas das multiplas execucoes
                     self.resultados[tipo_servidor][cenario['nome']][num_clientes] = self.calcular_estatisticas(execucoes_resultados)
         
         self.salvar_resultados()
@@ -155,32 +194,32 @@ class TestadorAutomatizado:
         if not execucoes_resultados:
             return None
             
-        # Extrair metricas de cada execucao
+#Extrair metricas de cada execucao
         throughputs = []
         tempos_resposta_medios = []
         taxas_sucesso = []
         tempos_totais = []
         
         for resultado in execucoes_resultados:
-            # Calcular throughput
+#Calcular throughput básico
             sucessos = len([r for r in resultado['resultados'] if r['sucesso']])
             throughput = sucessos / resultado['tempo_total'] if resultado['tempo_total'] > 0 else 0
             throughputs.append(throughput)
             
-            # Calcular tempo de resposta medio
+#Calcular tempo de resposta medio
             tempos_resposta = [r['tempo_resposta'] for r in resultado['resultados'] if r['sucesso']]
             tempo_medio = statistics.mean(tempos_resposta) if tempos_resposta else 0
             tempos_resposta_medios.append(tempo_medio)
             
-            # Calcular taxa de sucesso
+#Calcular taxa de sucesso
             total = len(resultado['resultados'])
             taxa = (sucessos / total * 100) if total > 0 else 0
             taxas_sucesso.append(taxa)
             
-            # Tempo total
+#Tempo total
             tempos_totais.append(resultado['tempo_total'])
         
-        # Calcular estatisticas finais
+#Calcular estatisticas finais
         resultado_estatistico = {
             'throughput': {
                 'media': statistics.mean(throughputs),
@@ -212,7 +251,7 @@ class TestadorAutomatizado:
         #Salva os resultados finais em arquivo TXT e CSV
         os.makedirs('/app/resultados', exist_ok=True)
         
-        # Primeiro gerar o arquivo CSV
+#Primeiro gerar o arquivo CSV
         self.gerar_csv()
         
         nome_arquivo = '/app/resultados/resultados dos testes.txt'
@@ -220,14 +259,14 @@ class TestadorAutomatizado:
         with open(nome_arquivo, 'w', encoding='ascii', errors='ignore') as f:
             f.write(f"ID Personalizado: {ID_CUSTOMIZADO}\n")
             
-            # Resumo detalhado por servidor
+#Resumo detalhado por servidor
             for tipo_servidor in ['sequencial', 'concorrente']:
                 if tipo_servidor in self.resultados:
                     f.write(f"\n{'='*80}\n")
                     f.write(f"SERVIDOR {tipo_servidor.upper()}\n")
                     f.write(f"{'='*80}\n")
                     
-                    # Estatísticas gerais do servidor
+#Estatísticas gerais do servidor
                     total_requisicoes = 0
                     total_sucessos = 0
                     
@@ -246,14 +285,14 @@ class TestadorAutomatizado:
                                 if num_clientes in self.resultados[tipo_servidor][cenario]:
                                     resultado = self.resultados[tipo_servidor][cenario][num_clientes]
                                     
-                                    # Usar estatisticas ja calculadas
+#Usar estatisticas ja calculadas
                                     throughput_medio = resultado['throughput']['media']
                                     tempo_resposta_medio = resultado['tempo_resposta']['media']
                                     taxa_sucesso_media = resultado['taxa_sucesso']['media']
                                     tempo_total_medio = resultado['tempo_total']['media']
                                     execucoes = resultado['execucoes']
                                     
-                                    # Para calcular totais, usar primeiro resultado detalhado
+#Para calcular totais, usar primeiro resultado detalhado
                                     primeiro_resultado = resultado['resultados_detalhados'][0] if resultado['resultados_detalhados'] else {}
                                     if primeiro_resultado:
                                         total_por_execucao = len(primeiro_resultado['resultados'])
@@ -261,14 +300,14 @@ class TestadorAutomatizado:
                                         total_requisicoes += total_por_execucao * execucoes
                                         total_sucessos += sucessos_por_execucao * execucoes
                                         
-                                        # Calcular requisições totais para este teste específico
+#Calcular requisições totais para este teste específico
                                         requisicoes_teste = total_por_execucao * execucoes
                                         sucessos_teste = sucessos_por_execucao * execucoes
                                     else:
                                         requisicoes_teste = 0
                                         sucessos_teste = 0
                                     
-                                    # Linha principal com metricas estatisticas
+#Linha principal com metricas estatisticas
                                     f.write(f"  {num_clientes:2d} clientes simultaneos (media de {execucoes} execucoes):\n")
                                     f.write(f"    - Requisicoes enviadas: {requisicoes_teste} total ({total_por_execucao if primeiro_resultado else 0} por execucao)\n")
                                     f.write(f"    - Sucessos: {sucessos_teste} | Taxa de sucesso media: {taxa_sucesso_media:5.1f}%\n")
@@ -276,7 +315,7 @@ class TestadorAutomatizado:
                                     f.write(f"    - Tempo medio de resposta: {tempo_resposta_medio*1000:6.1f}ms\n")
                                     f.write(f"    - Tempo medio de execucao: {tempo_total_medio:.2f} segundos\n")
                                     
-                                    # Avaliacao qualitativa baseada no throughput medio
+#Avaliacao qualitativa baseada no throughput medio
                                     if throughput_medio >= 50:
                                         avaliacao = "EXCELENTE"
                                     elif throughput_medio >= 20:
@@ -290,14 +329,14 @@ class TestadorAutomatizado:
                                     
                                     f.write(f"    - Avaliacao de desempenho: {avaliacao}\n")
                                     
-                                    # Mostrar desvios padrao para avaliar consistencia
+#Mostrar desvios padrao para avaliar consistencia
                                     throughput_desvio = resultado['throughput']['desvio_padrao']
                                     tempo_desvio = resultado['tempo_resposta']['desvio_padrao']
                                     f.write(f"    - Desvio Padrao: Throughput +/-{throughput_desvio:.3f}, Tempo +/-{tempo_desvio*1000:.1f}ms\n")
                                     
                                     f.write(f"\n")
                     
-                    # Resumo geral do servidor baseado nas estatisticas
+#Resumo geral do servidor baseado nas estatisticas
                     if total_requisicoes > 0:
                         taxa_geral = (total_sucessos / total_requisicoes * 100)
                         f.write(f"{'-'*60}\n")
@@ -305,7 +344,7 @@ class TestadorAutomatizado:
                         f.write(f"  - Total de requisicoes estimadas: {total_requisicoes}\n")
                         f.write(f"  - Taxa de sucesso estimada: {taxa_geral:.1f}%\n")
                         
-                        # Classificacao geral baseada na taxa de sucesso
+#Classificacao geral baseada na taxa de sucesso
                         if taxa_geral >= 99:
                             classificacao = "EXCELENTE - Sistema muito confiavel"
                         elif taxa_geral >= 95:
@@ -323,13 +362,13 @@ class TestadorAutomatizado:
                         f.write(f"RESUMO GERAL DO SERVIDOR {tipo_servidor.upper()}:\n")
                         f.write(f"  - Nenhum dado de teste disponivel\n")
             
-            # Comparacao detalhada entre servidores
+#Comparacao detalhada entre servidores
             f.write(f"\n{'='*80}\n")
             f.write("                  COMPARACAO DETALHADA ENTRE SERVIDORES\n")
             f.write(f"{'='*80}\n")
             
             if 'sequencial' in self.resultados and 'concorrente' in self.resultados:
-                # Cabecalho da tabela de comparacao
+#Cabecalho da tabela de comparacao
                 f.write(f"\nFormato: [Cenario] Clientes -> Sequencial vs Concorrente (Diferenca)\n")
                 f.write(f"{'-'*80}\n")
                 
@@ -354,7 +393,7 @@ class TestadorAutomatizado:
                                 seq = self.resultados['sequencial'][cenario][num_clientes]
                                 conc = self.resultados['concorrente'][cenario][num_clientes]
                                 
-                                # Usar estatisticas pre-calculadas
+#Usar estatisticas pre-calculadas
                                 seq_throughput = seq['throughput']['media']
                                 conc_throughput = conc['throughput']['media']
                                 seq_tempo_medio = seq['tempo_resposta']['media'] * 1000  # converter para ms
@@ -398,7 +437,7 @@ class TestadorAutomatizado:
                                 
                                 f.write(f"\n")
                         
-                        # Resumo do cenario
+#Resumo do cenario
                         if melhorias_cenario:
                             melhoria_media = sum(melhorias_cenario) / len(melhorias_cenario)
                             f.write(f"  Resumo do cenario {cenario.upper()}:\n")
@@ -416,7 +455,7 @@ class TestadorAutomatizado:
             
 
         
-        print(f"\n[SUCESSO] Resultados finais salvos em {nome_arquivo}")
+        print(Cores.sucesso(f"Resultados finais salvos em {nome_arquivo}"))
     
     def gerar_csv(self):
         """Gera arquivo CSV com todos os resultados dos testes incluindo estatisticas"""
@@ -437,7 +476,7 @@ class TestadorAutomatizado:
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
                 
-                # Processar dados de cada servidor
+#Processar dados de cada servidor
                 for tipo_servidor in ['sequencial', 'concorrente']:
                     if tipo_servidor in self.resultados:
                         for cenario in ['rapido', 'medio', 'lento']:
@@ -446,7 +485,7 @@ class TestadorAutomatizado:
                                     if num_clientes in self.resultados[tipo_servidor][cenario]:
                                         resultado = self.resultados[tipo_servidor][cenario][num_clientes]
                                         
-                                        # Escrever linha no CSV com estatisticas
+#Escrever linha no CSV com estatisticas
                                         writer.writerow({
                                             'servidor': tipo_servidor,
                                             'cenario': cenario,
@@ -465,11 +504,11 @@ class TestadorAutomatizado:
             pass  # Arquivo CSV gerado silenciosamente
             
         except Exception as e:
-            print(f"[ERRO] Falha ao gerar CSV: {e}")
+            print(Cores.erro(f"Falha ao gerar CSV: {e}"))
     
     def gerar_comparacao(self):
         #Gera comparação entre servidores com estatisticas
-        print("\n=== COMPARAÇÃO ENTRE SERVIDORES (ESTATÍSTICAS) ===")
+        print(f"\n{Cores.CIANO}{Cores.NEGRITO}=== COMPARAÇÃO ENTRE SERVIDORES (ESTATÍSTICAS) ==={Cores.RESET}")
         
         if 'sequencial' in self.resultados and 'concorrente' in self.resultados:
             for cenario in ['rapido', 'medio', 'lento']:
@@ -534,19 +573,19 @@ class TestadorProjeto:
     def teste_conectividade_basica(self, ambiente='docker'):
         #Executa teste básico de conectividade
         print("\n" + "="*70)
-        print("                    TESTE DE CONECTIVIDADE")
+        print(f"{Cores.CIANO}{Cores.NEGRITO}                    TESTE DE CONECTIVIDADE{Cores.RESET}")
         print("="*70)
         
         if ambiente == 'docker':
             configuracao_rede = "76.01.0.0/16"
             ip_servidor = "76.01.0.10"
-            print(f"\n[CONFIGURAÇÃO DE REDE]")
+            print(f"\n{Cores.AZUL}[CONFIGURAÇÃO DE REDE]{Cores.RESET}")
             print(f"  Ambiente:           Docker Contêineres")
             print(f"  Subnet configurada: {configuracao_rede}")
             print(f"  IP base servidor:   {ip_servidor}")
             print(f"  ID Personalizado:   {ID_CUSTOMIZADO}")
         else:
-            print(f"\n[CONFIGURAÇÃO DE REDE]")
+            print(f"\n{Cores.AZUL}[CONFIGURAÇÃO DE REDE]{Cores.RESET}")
             print(f"  Ambiente:           Local (Host)")
             print(f"  ID Personalizado:   {ID_CUSTOMIZADO}")
         
@@ -565,7 +604,7 @@ class TestadorProjeto:
                 else:
                     cliente = ClienteHTTP(endereco)
                 
-                # Executa múltiplas requisições para teste mais robusto
+#Executa múltiplas requisições para teste mais robusto
                 testes = []
                 for i in range(3):
                     resultado = cliente.enviar_requisicao('GET', '/')
@@ -590,14 +629,14 @@ class TestadorProjeto:
                     print(f"  Tempo mínimo:         {tempo_min*1000:.1f} ms")
                     print(f"  Tempo máximo:         {tempo_max*1000:.1f} ms")
                     
-                    # Verificar cabeçalhos
+#Verificar cabeçalhos
                     cabecalhos = sucessos[0].get('cabecalhos', {})
                     if 'X-Custom-ID' in cabecalhos:
                         print(f"  X-Custom-ID:          [PRESENTE] {cabecalhos['X-Custom-ID'][:16]}...")
                     else:
                         print(f"  X-Custom-ID:          [AUSENTE]")
                         
-                    # Avaliação de desempenho
+#Avaliação de desempenho
                     if tempo_medio < 0.050:
                         print(f"  Avaliação:            EXCELENTE (< 50ms)")
                     elif tempo_medio < 0.100:
@@ -620,7 +659,7 @@ class TestadorProjeto:
                     'falhas': 1
                 }
         
-        # Resumo final
+#Resumo final
         print(f"\n{'='*70}")
         print(f"                      RESUMO DE CONECTIVIDADE")
         print(f"{'='*70}")
@@ -708,7 +747,7 @@ class TestadorProjeto:
             
             resultados_endpoints[tipo_servidor] = resultados_servidor
             
-            # Estatísticas do servidor
+#Estatísticas do servidor
             sucessos = sum(1 for r in resultados_servidor.values() if r.get('sucesso', False))
             total = len(resultados_servidor)
             print(f"  {'-'*60}")
@@ -719,7 +758,7 @@ class TestadorProjeto:
                 tempo_medio = sum(tempos) / len(tempos)
                 print(f"  Tempo médio:         {tempo_medio*1000:.1f} ms")
         
-        # Resumo comparativo
+#Resumo comparativo
         print(f"\n{'='*70}")
         print(f"                     RESUMO DE ENDPOINTS")
         print(f"{'='*70}")
