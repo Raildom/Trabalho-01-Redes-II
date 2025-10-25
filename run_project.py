@@ -190,26 +190,30 @@ class ProjetoRedes:
     def entrar_conteiner_teste(self):
         #Entra no contêiner de teste
         print("")
-        print("=== Entrando no contêiner de teste ===")
-        print("Bem-vindo ao contêiner do cliente!")
-        print("Para sair, digite 'exit'")
+        print(Cores.info("=== Entrando no contêiner de teste ==="))
+        print(Cores.info("Bem-vindo ao contêiner do cliente!"))
+        print(Cores.aviso("Para sair, digite 'exit'"))
+        print("")
         
         #Verifica se o contêiner está rodando
         try:
             result = subprocess.run(['docker', 'ps'], capture_output=True, text=True)
             if 'cliente_teste' not in result.stdout:
-                print("[ERRO] Contêiner de teste não está rodando.")
-                print("Execute primeiro a opção 1 (Iniciar contêineres)")
+                print(Cores.erro("Contêiner de teste não está rodando."))
+                print(Cores.aviso("Execute primeiro a opção 1 (Iniciar contêineres)"))
                 return False
         except subprocess.CalledProcessError:
-            print("[ERRO] Erro ao verificar contêineres")
+            print(Cores.erro("Erro ao verificar contêineres"))
             return False
         
         try:
             subprocess.run(['docker', 'exec', '-it', 'cliente_teste', 'bash'])
+            print("")
+            print(Cores.sucesso("Você saiu do contêiner de teste"))
             return True
         except subprocess.CalledProcessError as e:
             print(Cores.erro(f"Falha ao entrar no contêiner: {e}"))
+            print(Cores.aviso("Verifique se o contêiner está rodando"))
             return False
     
     def mostrar_menu(self):
