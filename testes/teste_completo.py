@@ -13,6 +13,9 @@ requisicoes_por_cliente = 2
 #Numero de execucoes para cada teste (para calcular media e desvio padrao)
 execucoes_por_teste = 2
 
+concorrencia_clientes = 5
+concorrencia_requisicoes = 3
+
 import sys
 import os
 import csv
