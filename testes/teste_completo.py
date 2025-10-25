@@ -13,9 +13,6 @@ requisicoes_por_cliente = 2
 #Numero de execucoes para cada teste (para calcular media e desvio padrao)
 execucoes_por_teste = 2
 
-#Configuracoes para teste de concorrencia simpleso único para testar servidores sequencial e concorrente
-#Consolida funcionalidades de teste_cliente.py e testes_automatizados.py
-
 import sys
 import os
 import csv
@@ -62,25 +59,6 @@ except ImportError as e:
     print(Cores.erro(f"Erro ao importar módulos: {e}"))
     print("Certifique-se de estar no diretório correto do projeto")
     sys.exit(1)
-
-#============================================================================
-#CONFIGURACOES DE TESTE
-#============================================================================
-
-#Quantidades de clientes simultaneos para testar (altere aqui)
-clientes_teste = [1, 2, 4, 8]
-
-#Numero de requisicoes por cliente em cada teste (altere aqui)  
-requisicoes_por_cliente = 2
-
-#Numero de execucoes para cada teste (para calcular media e desvio padrao)
-execucoes_por_teste = 1
-
-#Configuracoes para teste de concorrencia simples
-concorrencia_clientes = 5
-concorrencia_requisicoes = 3
-
-#============================================================================
 
 class TestadorCarga:
     #Classe para executar testes de carga e concorrencia
