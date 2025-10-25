@@ -82,10 +82,20 @@ class ClienteHTTP:
             #Parse da resposta
             texto_resposta = dados_resposta.decode('utf-8')
             
+            #Dicionário de cabeçalhos
+            cabecalhos = {}
+            
             if "\r\n\r\n" in texto_resposta:
                 parte_cabecalhos, parte_corpo = texto_resposta.split("\r\n\r\n", 1)
-                linha_status = parte_cabecalhos.split('\r\n')[0]
+                linhas_cabecalhos = parte_cabecalhos.split('\r\n')
+                linha_status = linhas_cabecalhos[0]
                 codigo_status = int(linha_status.split(' ')[1])
+                
+                #Parse dos cabeçalhos
+                for linha in linhas_cabecalhos[1:]:
+                    if ': ' in linha:
+                        chave, valor = linha.split(': ', 1)
+                        cabecalhos[chave] = valor
             else:
                 codigo_status = 0
                 parte_corpo = ""
@@ -93,6 +103,7 @@ class ClienteHTTP:
             return {
                 'codigo_status': codigo_status,
                 'corpo': parte_corpo,
+                'cabecalhos': cabecalhos,
                 'tempo_resposta': tempo_total,
                 'tempo_conexao': tempo_conexao,
                 'tempo_envio': tempo_envio,
@@ -104,6 +115,7 @@ class ClienteHTTP:
             return {
                 'codigo_status': 0,
                 'corpo': "",
+                'cabecalhos': {},
                 'tempo_resposta': time.time() - tempo_inicio if 'tempo_inicio' in locals() else 0,
                 'tempo_conexao': 0,
                 'tempo_envio': 0,
