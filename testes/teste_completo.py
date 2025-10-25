@@ -29,7 +29,7 @@ except ImportError as e:
 # ============================================================================
 
 # Quantidades de clientes simultaneos para testar (altere aqui)
-clientes_teste = [1, 5]
+clientes_teste = [1, 5, 10, 20]
 
 # Numero de requisicoes por cliente em cada teste (altere aqui)  
 requisicoes_por_cliente = 2
@@ -63,8 +63,6 @@ class TestadorCarga:
         threads = []
         self.resultados = []
         
-        print(f"Iniciando teste com {num_clientes} clientes, {requisicoes_por_cliente} requisições cada")
-        
         tempo_inicio = time.time()
         
         def executar_cliente(id_cliente):
@@ -93,90 +91,8 @@ class TestadorCarga:
         }
     
     def gerar_relatorio(self, resultado_teste):
-        #Gera relatório detalhado do teste
-        resultados = resultado_teste['resultados']
-        sucessos = [r for r in resultados if r['sucesso']]
-        falhas = [r for r in resultados if not r['sucesso']]
-        
-        if sucessos:
-            tempos_resposta = [r['tempo_resposta'] for r in sucessos]
-            tempo_medio = statistics.mean(tempos_resposta)
-            tempo_min = min(tempos_resposta)
-            tempo_max = max(tempos_resposta)
-            tempo_mediano = statistics.median(tempos_resposta)
-            desvio_padrao = statistics.stdev(tempos_resposta) if len(tempos_resposta) > 1 else 0
-        else:
-            tempo_medio = tempo_min = tempo_max = tempo_mediano = desvio_padrao = 0
-        
-        throughput = len(sucessos) / resultado_teste['tempo_total'] if resultado_teste['tempo_total'] > 0 else 0
-        
-        print(f"\n{'='*60}")
-        print(f"               RELATÓRIO DETALHADO DE TESTE")
-        print(f"{'='*60}")
-        
-        # Estatísticas gerais
-        print(f"\n[ESTATÍSTICAS GERAIS]")
-        print(f"  Total de requisições enviadas: {len(resultados)}")
-        print(f"  Requisições bem-sucedidas:     {len(sucessos)}")
-        print(f"  Requisições com falha:         {len(falhas)}")
-        print(f"  Taxa de sucesso:               {(len(sucessos)/len(resultados)*100):.1f}%")
-        print(f"  Clientes simultâneos:          {resultado_teste['num_clientes']}")
-        print(f"  Requisições por cliente:       {resultado_teste['requisicoes_por_cliente']}")
-        
-        # Métricas de tempo
-        print(f"\n[MÉTRICAS DE DESEMPENHO]")
-        print(f"  Tempo total de execução:       {resultado_teste['tempo_total']:.2f} segundos")
-        print(f"  Throughput (requisições/seg):  {throughput:.2f} req/s")
-        
-        if sucessos:
-            print(f"\n[ANÁLISE DE TEMPO DE RESPOSTA]")
-            print(f"  Tempo médio de resposta:       {tempo_medio*1000:.1f} ms")
-            print(f"  Tempo mínimo de resposta:      {tempo_min*1000:.1f} ms")
-            print(f"  Tempo máximo de resposta:      {tempo_max*1000:.1f} ms")
-            print(f"  Tempo mediano de resposta:     {tempo_mediano*1000:.1f} ms")
-            print(f"  Desvio padrão:                 {desvio_padrao*1000:.1f} ms")
-            
-            # Percentis
-            tempos_ordenados = sorted(tempos_resposta)
-            p95 = tempos_ordenados[int(0.95 * len(tempos_ordenados))]
-            p99 = tempos_ordenados[int(0.99 * len(tempos_ordenados))]
-            print(f"  Percentil 95%:                 {p95*1000:.1f} ms")
-            print(f"  Percentil 99%:                 {p99*1000:.1f} ms")
-        
-        # Análise de qualidade
-        if falhas:
-            print(f"\n[ANÁLISE DE FALHAS]")
-            tipos_erro = {}
-            for falha in falhas:
-                erro = falha.get('erro', 'Erro desconhecido')
-                tipos_erro[erro] = tipos_erro.get(erro, 0) + 1
-            
-            for erro, count in tipos_erro.items():
-                print(f"  {erro}: {count} ocorrências")
-        
-        # Avaliação da qualidade do serviço
-        print(f"\n[AVALIAÇÃO DE QUALIDADE]")
-        if len(sucessos) == len(resultados):
-            print(f"  Status: EXCELENTE - Todas as requisições foram atendidas")
-        elif len(sucessos) >= len(resultados) * 0.95:
-            print(f"  Status: MUITO BOM - {(len(sucessos)/len(resultados)*100):.1f}% de sucesso")
-        elif len(sucessos) >= len(resultados) * 0.90:
-            print(f"  Status: BOM - {(len(sucessos)/len(resultados)*100):.1f}% de sucesso")
-        elif len(sucessos) >= len(resultados) * 0.75:
-            print(f"  Status: REGULAR - {(len(sucessos)/len(resultados)*100):.1f}% de sucesso")
-        else:
-            print(f"  Status: RUIM - Apenas {(len(sucessos)/len(resultados)*100):.1f}% de sucesso")
-        
-        if sucessos and tempo_medio < 0.100:
-            print(f"  Responsividade: EXCELENTE - Tempo médio < 100ms")
-        elif sucessos and tempo_medio < 0.500:
-            print(f"  Responsividade: BOA - Tempo médio < 500ms")
-        elif sucessos and tempo_medio < 1.000:
-            print(f"  Responsividade: REGULAR - Tempo médio < 1s")
-        elif sucessos:
-            print(f"  Responsividade: LENTA - Tempo médio > 1s")
-        
-        print(f"{'='*60}")
+        #Gera relatório detalhado do teste (silencioso durante execução automática)
+        pass
 
 class TestadorAutomatizado:
     #Classe para executar testes automatizados
@@ -185,8 +101,6 @@ class TestadorAutomatizado:
         
     def executar_todos_testes(self):
         #Executa todos os testes automatizados
-        print("=== Iniciando Testes Automatizados ===")
-        print(f"Data/Hora: {datetime.now()}")
         
         #Endereços dos servidores (baseado no docker-compose)
         servidores = {
@@ -205,16 +119,12 @@ class TestadorAutomatizado:
         # Para alterar: modifique as variáveis no topo do arquivo
         
         for tipo_servidor, ip_servidor in servidores.items():
-            print(f"\n=== Testando Servidor {tipo_servidor.upper()} ({ip_servidor}) ===")
             self.resultados[tipo_servidor] = {}
             
             for cenario in cenarios_teste:
-                print(f"\n--- Cenário: {cenario['descricao']} ---")
                 self.resultados[tipo_servidor][cenario['nome']] = {}
                 
                 for num_clientes in clientes_teste:
-                    print(f"\nTestando com {num_clientes} clientes simultâneos...")
-                    
                     testador = TestadorCarga(ip_servidor)
                     resultado = testador.teste_concorrente(
                         num_clientes, 
@@ -224,7 +134,6 @@ class TestadorAutomatizado:
                     )
                     
                     self.resultados[tipo_servidor][cenario['nome']][num_clientes] = resultado
-                    testador.gerar_relatorio(resultado)
         
         self.salvar_resultados()
         self.gerar_comparacao()
@@ -507,7 +416,7 @@ class TestadorAutomatizado:
                                             'tempo_max_ms': round(tempo_max, 1)
                                         })
             
-            print(f"[SUCESSO] Arquivo CSV gerado: {nome_arquivo_csv}")
+            pass  # Arquivo CSV gerado silenciosamente
             
         except Exception as e:
             print(f"[ERRO] Falha ao gerar CSV: {e}")
@@ -729,7 +638,7 @@ class TestadorProjeto:
                     
                     if resultado['sucesso']:
                         tempo_ms = resultado['tempo_resposta'] * 1000
-                        status_icon = "[✓]" if resultado['codigo_status'] == 200 else "[!]"
+                        status_icon = "[OK]" if resultado['codigo_status'] == 200 else "[!]"
                         
                         print(f"  {nome:8} {endpoint:8} {status_icon} HTTP {resultado['codigo_status']} - {tempo_ms:6.1f} ms - {descricao}")
                         
@@ -739,14 +648,14 @@ class TestadorProjeto:
                             'status': resultado['codigo_status']
                         }
                     else:
-                        print(f"  {nome:8} {endpoint:8} [✗] ERRO     - {resultado.get('erro', 'Falha na requisição')}")
+                        print(f"  {nome:8} {endpoint:8} [X] ERRO     - {resultado.get('erro', 'Falha na requisição')}")
                         resultados_servidor[endpoint] = {
                             'sucesso': False,
                             'erro': resultado.get('erro', 'Erro desconhecido')
                         }
                         
                 except Exception as e:
-                    print(f"  {nome:8} {endpoint:8} [✗] EXCEÇÃO - {str(e)}")
+                    print(f"  {nome:8} {endpoint:8} [X] EXCEÇÃO - {str(e)}")
                     resultados_servidor[endpoint] = {
                         'sucesso': False,
                         'erro': str(e)

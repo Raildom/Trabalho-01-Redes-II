@@ -15,8 +15,7 @@ class AnalisadorResultados:
         #Carrega os resultados dos testes do arquivo CSV
         try:
             self.df = pd.read_csv(self.arquivo_csv)
-            print(f"Resultados CSV carregados de {self.arquivo_csv}")
-            print(f"Dados carregados: {len(self.df)} registros")
+            # CSV carregado silenciosamente
         except FileNotFoundError:
             print(f"Arquivo CSV não encontrado: {self.arquivo_csv}")
             print("Execute primeiro os testes completos para gerar o arquivo CSV")
@@ -33,188 +32,185 @@ class AnalisadorResultados:
         
         #Configura o estilo dos gráficos
         plt.style.use('default')
+        plt.rcParams['figure.figsize'] = (12, 8)
+        plt.rcParams['font.size'] = 10
         
         #Cria diretório para gráficos
         os.makedirs('resultados/graficos', exist_ok=True)
         
-        print("Gerando gráficos a partir do CSV...")
+        # Gerando gráficos silenciosamente
         
-        #Comparação de throughput
-        self.grafico_comparacao_throughput()
-        
-        #Comparação de tempo de resposta
-        self.grafico_comparacao_tempo_resposta()
-        
-        #Taxa de sucesso
-        self.grafico_comparacao_taxa_sucesso()
-        
-        #Análise de escalabilidade
-        self.grafico_analise_escalabilidade()
+        #Gráficos individuais
+        self.plotar_throughput()
+        self.plotar_tempo_resposta()
+        self.plotar_taxa_sucesso()
+        self.plotar_comparacao_escalabilidade()
         
         print("Gráficos salvos em resultados/graficos/")
 
-    def grafico_comparacao_throughput(self):
-        #Gráfico de comparação de throughput
+    def plotar_throughput(self):
+        #Plota gráfico de throughput - um gráfico por cenário
         cenarios = ['rapido', 'medio', 'lento']
-        cenarios_labels = ['Rápido', 'Médio', 'Lento']
-        
-        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-        fig.suptitle('Comparação de Throughput entre Servidores', fontsize=16, fontweight='bold')
+        cenarios_nomes = ['Rápido', 'Médio', 'Lento']
         
         for i, cenario in enumerate(cenarios):
+            plt.figure(figsize=(10, 6))
             dados_cenario = self.df[self.df['cenario'] == cenario]
             
-            if not dados_cenario.empty:
-                dados_seq = dados_cenario[dados_cenario['servidor'] == 'sequencial'].sort_values('num_clientes')
-                dados_conc = dados_cenario[dados_cenario['servidor'] == 'concorrente'].sort_values('num_clientes')
-                
-                if not dados_seq.empty and not dados_conc.empty:
-                    x = np.array(dados_seq['num_clientes'])
-                    throughput_seq = dados_seq['throughput']
-                    throughput_conc = dados_conc['throughput']
-                    
-                    axes[i].bar(x - 0.2, throughput_seq, 0.4, label='Sequencial', color='lightcoral', alpha=0.8)
-                    axes[i].bar(x + 0.2, throughput_conc, 0.4, label='Concorrente', color='lightblue', alpha=0.8)
-                    
-                    axes[i].set_title(f'Cenário {cenarios_labels[i]}')
-                    axes[i].set_xlabel('Número de Clientes')
-                    axes[i].set_ylabel('Throughput (req/s)')
-                    axes[i].legend()
-                    axes[i].grid(True, alpha=0.3)
-                    axes[i].set_xticks(x)
+            if dados_cenario.empty:
+                plt.text(0.5, 0.5, f'Sem dados para cenário {cenarios_nomes[i]}', 
+                        ha='center', va='center', transform=plt.gca().transAxes, fontsize=14)
+                plt.title(f'Throughput - Cenário {cenarios_nomes[i]}', fontsize=16, fontweight='bold')
+                plt.savefig(f'resultados/graficos/throughput_{cenario}.png', dpi=300, bbox_inches='tight')
+                plt.close()
+                continue
+            
+            dados_seq = dados_cenario[dados_cenario['servidor'] == 'sequencial'].sort_values('num_clientes')
+            dados_conc = dados_cenario[dados_cenario['servidor'] == 'concorrente'].sort_values('num_clientes')
+            
+            if not dados_seq.empty:
+                plt.plot(dados_seq['num_clientes'], dados_seq['throughput'], 
+                        'o-', label='Sequencial', color='red', linewidth=2, markersize=8)
+            
+            if not dados_conc.empty:
+                plt.plot(dados_conc['num_clientes'], dados_conc['throughput'], 
+                        's-', label='Concorrente', color='blue', linewidth=2, markersize=8)
+            
+            plt.title(f'Throughput - Cenário {cenarios_nomes[i]}', fontsize=16, fontweight='bold')
+            plt.xlabel('Número de Clientes', fontsize=12)
+            plt.ylabel('Throughput (req/s)', fontsize=12)
+            plt.legend(fontsize=12)
+            plt.grid(True, alpha=0.3)
+            plt.xlim(left=0)
+            plt.ylim(bottom=0)
+            
+            plt.tight_layout()
+            plt.savefig(f'resultados/graficos/throughput_{cenario}.png', dpi=300, bbox_inches='tight')
+            plt.close()
         
-        plt.tight_layout()
-        plt.savefig('resultados/graficos/comparacao_throughput.png', dpi=300, bbox_inches='tight')
-        plt.close()
-        print("Gráfico de throughput salvo: comparacao_throughput.png")
+        print("Gráficos de throughput salvos: throughput_rapido.png, throughput_medio.png, throughput_lento.png")
 
-    def grafico_comparacao_tempo_resposta(self):
-        #Gráfico de comparação de tempo de resposta
+    def plotar_tempo_resposta(self):
+        #Plota gráfico de tempo de resposta - um gráfico por cenário
         cenarios = ['rapido', 'medio', 'lento']
-        cenarios_labels = ['Rápido', 'Médio', 'Lento']
-        
-        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-        fig.suptitle('Comparação de Tempo de Resposta entre Servidores', fontsize=16, fontweight='bold')
+        cenarios_nomes = ['Rápido', 'Médio', 'Lento']
         
         for i, cenario in enumerate(cenarios):
+            plt.figure(figsize=(10, 6))
             dados_cenario = self.df[self.df['cenario'] == cenario]
             
-            if not dados_cenario.empty:
-                dados_seq = dados_cenario[dados_cenario['servidor'] == 'sequencial'].sort_values('num_clientes')
-                dados_conc = dados_cenario[dados_cenario['servidor'] == 'concorrente'].sort_values('num_clientes')
-                
-                if not dados_seq.empty and not dados_conc.empty:
-                    x = np.array(dados_seq['num_clientes'])
-                    tempos_seq = dados_seq['tempo_medio_ms']
-                    tempos_conc = dados_conc['tempo_medio_ms']
-                    
-                    axes[i].bar(x - 0.2, tempos_seq, 0.4, label='Sequencial', color='lightcoral', alpha=0.8)
-                    axes[i].bar(x + 0.2, tempos_conc, 0.4, label='Concorrente', color='lightblue', alpha=0.8)
-                    
-                    axes[i].set_title(f'Cenário {cenarios_labels[i]}')
-                    axes[i].set_xlabel('Número de Clientes')
-                    axes[i].set_ylabel('Tempo Médio (ms)')
-                    axes[i].legend()
-                    axes[i].grid(True, alpha=0.3)
-                    axes[i].set_xticks(x)
+            if dados_cenario.empty:
+                plt.text(0.5, 0.5, f'Sem dados para cenário {cenarios_nomes[i]}', 
+                        ha='center', va='center', transform=plt.gca().transAxes, fontsize=14)
+                plt.title(f'Tempo de Resposta - Cenário {cenarios_nomes[i]}', fontsize=16, fontweight='bold')
+                plt.savefig(f'resultados/graficos/tempo_resposta_{cenario}.png', dpi=300, bbox_inches='tight')
+                plt.close()
+                continue
+            
+            dados_seq = dados_cenario[dados_cenario['servidor'] == 'sequencial'].sort_values('num_clientes')
+            dados_conc = dados_cenario[dados_cenario['servidor'] == 'concorrente'].sort_values('num_clientes')
+            
+            if not dados_seq.empty:
+                plt.plot(dados_seq['num_clientes'], dados_seq['tempo_medio_ms'], 
+                        'o-', label='Sequencial', color='red', linewidth=2, markersize=8)
+            
+            if not dados_conc.empty:
+                plt.plot(dados_conc['num_clientes'], dados_conc['tempo_medio_ms'], 
+                        's-', label='Concorrente', color='blue', linewidth=2, markersize=8)
+            
+            plt.title(f'Tempo de Resposta - Cenário {cenarios_nomes[i]}', fontsize=16, fontweight='bold')
+            plt.xlabel('Número de Clientes', fontsize=12)
+            plt.ylabel('Tempo Médio de Resposta (ms)', fontsize=12)
+            plt.legend(fontsize=12)
+            plt.grid(True, alpha=0.3)
+            plt.xlim(left=0)
+            plt.ylim(bottom=0)
+            
+            plt.tight_layout()
+            plt.savefig(f'resultados/graficos/tempo_resposta_{cenario}.png', dpi=300, bbox_inches='tight')
+            plt.close()
         
-        plt.tight_layout()
-        plt.savefig('resultados/graficos/comparacao_tempo_resposta.png', dpi=300, bbox_inches='tight')
-        plt.close()
-        print("Gráfico de tempo de resposta salvo: comparacao_tempo_resposta.png")
+        print("Gráficos de tempo de resposta salvos: tempo_resposta_rapido.png, tempo_resposta_medio.png, tempo_resposta_lento.png")
 
-    def grafico_comparacao_taxa_sucesso(self):
-        #Gráfico de comparação de taxa de sucesso
+    def plotar_taxa_sucesso(self):
+        #Plota gráfico de taxa de sucesso - um gráfico por cenário
         cenarios = ['rapido', 'medio', 'lento']
-        cenarios_labels = ['Rápido', 'Médio', 'Lento']
-        
-        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-        fig.suptitle('Análise de Taxa de Sucesso por Cenário', fontsize=16, fontweight='bold')
+        cenarios_nomes = ['Rápido', 'Médio', 'Lento']
         
         for i, cenario in enumerate(cenarios):
+            plt.figure(figsize=(10, 6))
             dados_cenario = self.df[self.df['cenario'] == cenario]
             
-            if not dados_cenario.empty:
-                dados_seq = dados_cenario[dados_cenario['servidor'] == 'sequencial'].sort_values('num_clientes')
-                dados_conc = dados_cenario[dados_cenario['servidor'] == 'concorrente'].sort_values('num_clientes')
-                
-                if not dados_seq.empty and not dados_conc.empty:
-                    x = np.array(dados_seq['num_clientes'])
-                    sucesso_seq = dados_seq['taxa_sucesso']
-                    sucesso_conc = dados_conc['taxa_sucesso']
-                    
-                    axes[i].bar(x - 0.2, sucesso_seq, 0.4, label='Sequencial', color='lightcoral', alpha=0.8)
-                    axes[i].bar(x + 0.2, sucesso_conc, 0.4, label='Concorrente', color='lightblue', alpha=0.8)
-                    
-                    axes[i].set_title(f'Cenário {cenarios_labels[i]}')
-                    axes[i].set_xlabel('Número de Clientes')
-                    axes[i].set_ylabel('Taxa de Sucesso (%)')
-                    axes[i].set_ylim(0, 105)
-                    axes[i].legend()
-                    axes[i].grid(True, alpha=0.3)
-                    axes[i].set_xticks(x)
-                    
-                    #Adicionar linha de referência em 100%
-                    axes[i].axhline(y=100, color='green', linestyle='--', alpha=0.7)
+            if dados_cenario.empty:
+                plt.text(0.5, 0.5, f'Sem dados para cenário {cenarios_nomes[i]}', 
+                        ha='center', va='center', transform=plt.gca().transAxes, fontsize=14)
+                plt.title(f'Taxa de Sucesso - Cenário {cenarios_nomes[i]}', fontsize=16, fontweight='bold')
+                plt.savefig(f'resultados/graficos/taxa_sucesso_{cenario}.png', dpi=300, bbox_inches='tight')
+                plt.close()
+                continue
+            
+            dados_seq = dados_cenario[dados_cenario['servidor'] == 'sequencial'].sort_values('num_clientes')
+            dados_conc = dados_cenario[dados_cenario['servidor'] == 'concorrente'].sort_values('num_clientes')
+            
+            if not dados_seq.empty:
+                plt.plot(dados_seq['num_clientes'], dados_seq['taxa_sucesso'], 
+                        'o-', label='Sequencial', color='red', linewidth=2, markersize=8)
+            
+            if not dados_conc.empty:
+                plt.plot(dados_conc['num_clientes'], dados_conc['taxa_sucesso'], 
+                        's-', label='Concorrente', color='blue', linewidth=2, markersize=8)
+            
+            plt.title(f'Taxa de Sucesso - Cenário {cenarios_nomes[i]}', fontsize=16, fontweight='bold')
+            plt.xlabel('Número de Clientes', fontsize=12)
+            plt.ylabel('Taxa de Sucesso (%)', fontsize=12)
+            plt.legend(fontsize=12)
+            plt.grid(True, alpha=0.3)
+            plt.xlim(left=0)
+            plt.ylim(0, 105)
+            
+            #Linha de referência em 100%
+            plt.axhline(y=100, color='green', linestyle='--', alpha=0.7, label='Meta 100%')
+            
+            plt.tight_layout()
+            plt.savefig(f'resultados/graficos/taxa_sucesso_{cenario}.png', dpi=300, bbox_inches='tight')
+            plt.close()
         
-        plt.tight_layout()
-        plt.savefig('resultados/graficos/analise_taxa_sucesso.png', dpi=300, bbox_inches='tight')
-        plt.close()
-        print("Gráfico de taxa de sucesso salvo: analise_taxa_sucesso.png")
+        print("Gráficos de taxa de sucesso salvos: taxa_sucesso_rapido.png, taxa_sucesso_medio.png, taxa_sucesso_lento.png")
     
-    def grafico_analise_escalabilidade(self):
-        #Gráfico de análise de escalabilidade
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-        fig.suptitle('Análise de Escalabilidade', fontsize=16, fontweight='bold')
+    def plotar_comparacao_escalabilidade(self):
+        #Plota gráfico comparativo de escalabilidade - um gráfico geral
+        plt.figure(figsize=(12, 8))
         
-        #Throughput vs Número de Clientes (cenário rápido)
-        dados_rapido = self.df[self.df['cenario'] == 'rapido']
+        cenarios = ['rapido', 'medio', 'lento']
+        cores = ['green', 'orange', 'purple']
         
-        if not dados_rapido.empty:
-            dados_seq = dados_rapido[dados_rapido['servidor'] == 'sequencial'].sort_values('num_clientes')
-            dados_conc = dados_rapido[dados_rapido['servidor'] == 'concorrente'].sort_values('num_clientes')
+        for i, (cenario, cor) in enumerate(zip(cenarios, cores)):
+            dados_cenario = self.df[self.df['cenario'] == cenario]
             
-            if not dados_seq.empty and not dados_conc.empty:
-                #Garantir que os dados tenham o mesmo tamanho
-                clientes_seq = dados_seq['num_clientes'].values
-                clientes_conc = dados_conc['num_clientes'].values
+            if not dados_cenario.empty:
+                dados_seq = dados_cenario[dados_cenario['servidor'] == 'sequencial'].sort_values('num_clientes')
+                dados_conc = dados_cenario[dados_cenario['servidor'] == 'concorrente'].sort_values('num_clientes')
                 
-                #Usar apenas clientes que estão em ambos os datasets
-                clientes_comuns = sorted(set(clientes_seq) & set(clientes_conc))
+                if not dados_seq.empty:
+                    plt.plot(dados_seq['num_clientes'], dados_seq['throughput'], 
+                           '--', label=f'Sequencial {cenario.capitalize()}', color=cor, alpha=0.7, linewidth=1)
                 
-                if clientes_comuns:
-                    #Filtrar dados para clientes comuns
-                    dados_seq_filtrados = dados_seq[dados_seq['num_clientes'].isin(clientes_comuns)].sort_values('num_clientes')
-                    dados_conc_filtrados = dados_conc[dados_conc['num_clientes'].isin(clientes_comuns)].sort_values('num_clientes')
-                    
-                    clientes = dados_seq_filtrados['num_clientes'].values
-                    throughput_seq = dados_seq_filtrados['throughput'].values
-                    throughput_conc = dados_conc_filtrados['throughput'].values
-                    
-                    ax1.plot(clientes, throughput_seq, 'o-', label='Sequencial', color='red', linewidth=2, markersize=8)
-                    ax1.plot(clientes, throughput_conc, 's-', label='Concorrente', color='blue', linewidth=2, markersize=8)
-                    ax1.set_title('Escalabilidade de Throughput (Cenário Rápido)')
-                    ax1.set_xlabel('Número de Clientes')
-                    ax1.set_ylabel('Throughput (req/s)')
-                    ax1.legend()
-                    ax1.grid(True, alpha=0.3)
-                    
-                    #Eficiência por Cliente
-                    eficiencia_seq = throughput_seq / clientes
-                    eficiencia_conc = throughput_conc / clientes
-                    
-                    ax2.plot(clientes, eficiencia_seq, 'o-', label='Sequencial', color='red', linewidth=2, markersize=8)
-                    ax2.plot(clientes, eficiencia_conc, 's-', label='Concorrente', color='blue', linewidth=2, markersize=8)
-                    ax2.set_title('Eficiência por Cliente')
-                    ax2.set_xlabel('Número de Clientes')
-                    ax2.set_ylabel('Eficiência (req/s por cliente)')
-                    ax2.legend()
-                    ax2.grid(True, alpha=0.3)
+                if not dados_conc.empty:
+                    plt.plot(dados_conc['num_clientes'], dados_conc['throughput'], 
+                           '-', label=f'Concorrente {cenario.capitalize()}', color=cor, linewidth=2, markersize=6)
+        
+        plt.title('Comparação de Escalabilidade - Throughput por Cenário', fontsize=16, fontweight='bold')
+        plt.xlabel('Número de Clientes', fontsize=12)
+        plt.ylabel('Throughput (req/s)', fontsize=12)
+        plt.legend(fontsize=10)
+        plt.grid(True, alpha=0.3)
+        plt.xlim(left=0)
+        plt.ylim(bottom=0)
         
         plt.tight_layout()
-        plt.savefig('resultados/graficos/analise_escalabilidade.png', dpi=300, bbox_inches='tight')
+        plt.savefig('resultados/graficos/escalabilidade_comparativa.png', dpi=300, bbox_inches='tight')
         plt.close()
-        print("Gráfico de escalabilidade salvo: analise_escalabilidade.png")
+        print("Gráfico de escalabilidade salvo: escalabilidade_comparativa.png")
 
 if __name__ == "__main__":
     analisador = AnalisadorResultados()
@@ -222,7 +218,7 @@ if __name__ == "__main__":
     
     print("\nGráficos gerados com sucesso!")
     print("Arquivos criados:")
-    print("  - comparacao_throughput.png")
-    print("  - comparacao_tempo_resposta.png")
-    print("  - analise_taxa_sucesso.png")
-    print("  - analise_escalabilidade.png")
+    print("  - throughput_rapido.png, throughput_medio.png, throughput_lento.png")
+    print("  - tempo_resposta_rapido.png, tempo_resposta_medio.png, tempo_resposta_lento.png")
+    print("  - taxa_sucesso_rapido.png, taxa_sucesso_medio.png, taxa_sucesso_lento.png")
+    print("  - escalabilidade_comparativa.png")
