@@ -64,23 +64,23 @@ class ProjetoRedes:
         
         try:
             #Para contêineres existentes se estiverem rodando
-            subprocess.run(['docker-compose', 'down'], cwd='docker', stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(['docker-compose', '-f', 'docker/docker-compose.yml', 'down'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             
             #Constrói e inicia os contêineres
-            result = subprocess.run(['docker-compose', 'up', '--build', '-d'], cwd='docker', check=True)
+            result = subprocess.run(['docker-compose', '-f', 'docker/docker-compose.yml', 'up', '--build', '-d'], check=True)
             
             print("Aguardando contêineres iniciarem...")
             time.sleep(2)
             
             #Verifica se os contêineres estão rodando
-            result = subprocess.run(['docker-compose', 'ps'], cwd='docker', capture_output=True, text=True)
+            result = subprocess.run(['docker-compose', '-f', 'docker/docker-compose.yml', 'ps'], capture_output=True, text=True)
             if 'Up' in result.stdout:
                 print(Cores.sucesso("Contêineres iniciados com sucesso"))
                 print(result.stdout)
                 return True
             else:
                 print(Cores.erro("Erro ao iniciar contêineres"))
-                subprocess.run(['docker-compose', 'logs'], cwd='docker')
+                subprocess.run(['docker-compose', '-f', 'docker/docker-compose.yml', 'logs'])
                 return False
                 
         except subprocess.CalledProcessError as e:
@@ -88,6 +88,32 @@ class ProjetoRedes:
             return False
     
 
+    
+    def teste_conectividade(self):
+        #Executa teste de conectividade
+        print("")
+        print("=== Executando teste de conectividade ===")
+        
+        #Verifica se o contêiner está rodando
+        try:
+            result = subprocess.run(['docker', 'ps'], capture_output=True, text=True)
+            if 'cliente_teste' not in result.stdout:
+                print(Cores.erro("Contêiner de teste não está rodando."))
+                print("Execute primeiro a opção 1 (Iniciar contêineres)")
+                return False
+        except subprocess.CalledProcessError:
+            print(Cores.erro("Erro ao verificar contêineres"))
+            return False
+        
+        #Executa o teste de conectividade
+        try:
+            subprocess.run(['docker', 'exec', 'cliente_teste', 'python3', 'testes/teste_completo.py', '--conectividade'], check=True)
+            print(Cores.sucesso("Teste de conectividade concluído"))
+            return True
+        except subprocess.CalledProcessError:
+            print(Cores.erro("Falha no teste de conectividade"))
+            print("Verifique os logs para mais detalhes")
+            return False
     
     def executar_testes_completos(self):
         #Executa testes completos
@@ -154,48 +180,11 @@ class ProjetoRedes:
         print("=== Parando contêineres ===")
         
         try:
-            subprocess.run(['docker-compose', 'down'], cwd='docker', check=True)
+            subprocess.run(['docker-compose', '-f', 'docker/docker-compose.yml', 'down'], check=True)
             print(Cores.sucesso("Contêineres parados"))
             return True
         except subprocess.CalledProcessError as e:
             print(Cores.erro(f"Falha ao parar contêineres: {e}"))
-            return False
-    
-    def limpar_ambiente(self):
-        #Limpa ambiente Docker
-        print("")
-        print("=== Limpando ambiente ===")
-        
-        try:
-            subprocess.run(['docker-compose', 'down', '--volumes', '--remove-orphans'], cwd='docker')
-            subprocess.run(['docker', 'system', 'prune', '-f'])
-            print(Cores.sucesso("Ambiente limpo"))
-            return True
-        except subprocess.CalledProcessError as e:
-            print(Cores.erro(f"Falha ao limpar ambiente: {e}"))
-            return False
-    
-    def mostrar_logs(self):
-        #Mostra logs dos contêineres
-        print("")
-        print("=== Logs dos contêineres ===")
-        
-        #Verifica se os contêineres estão rodando
-        try:
-            result = subprocess.run(['docker-compose', 'ps'], cwd='docker', capture_output=True, text=True)
-            if 'Up' not in result.stdout:
-                print(Cores.aviso("Contêineres não estão rodando."))
-                print("Execute primeiro a opção 1 (Iniciar contêineres)")
-                return False
-        except subprocess.CalledProcessError:
-            print(Cores.erro("Erro ao verificar contêineres"))
-            return False
-        
-        try:
-            subprocess.run(['docker-compose', 'logs'], cwd='docker')
-            return True
-        except subprocess.CalledProcessError as e:
-            print(f"[ERRO] Falha ao mostrar logs: {e}")
             return False
     
     def entrar_conteiner_teste(self):
@@ -228,13 +217,11 @@ class ProjetoRedes:
         print("")
         print(f"{Cores.CIANO}{Cores.NEGRITO}==== MENU PRINCIPAL ===={Cores.RESET}")
         print("1) Iniciar contêineres")
-        print("2) Executar testes completos")
-        print("3) Gerar análises e gráficos")
-        print("4) Mostrar logs")
+        print("2) Teste de conectividade")
+        print("3) Executar testes completos")
+        print("4) Gerar análises e gráficos")
         print("5) Entrar no contêiner de teste")
-        print("6) Parar contêineres")
-        print("7) Limpar ambiente")
-        print("8) Executar tudo (início ao fim)")
+        print("6) Executar tudo (início ao fim)")
         print("0) Sair")
         print("")
     
@@ -261,15 +248,12 @@ class ProjetoRedes:
         comandos = {
             'start': self.iniciar_conteineres,
             'iniciar': self.iniciar_conteineres,
+            'conectividade': self.teste_conectividade,
+            'teste-conectividade': self.teste_conectividade,
             'full-test': self.executar_testes_completos,
             'teste-completo': self.executar_testes_completos,
             'analyze': self.gerar_analises,
             'analisar': self.gerar_analises,
-            'stop': self.parar_conteineres,
-            'parar': self.parar_conteineres,
-            'clean': self.limpar_ambiente,
-            'limpar': self.limpar_ambiente,
-            'logs': self.mostrar_logs,
             'shell': self.entrar_conteiner_teste,
             'all': self.executar_tudo,
             'tudo': self.executar_tudo
@@ -279,7 +263,7 @@ class ProjetoRedes:
             return comandos[comando]()
         else:
             print(f"Opção inválida: {comando}")
-            print("Opções: iniciar, teste-completo, analisar, parar, limpar, logs, shell, tudo")
+            print("Opções: iniciar, conectividade, teste-completo, analisar, shell, tudo")
             return False
     
     def menu_interativo(self):
@@ -292,18 +276,14 @@ class ProjetoRedes:
                 if escolha == '1':
                     self.iniciar_conteineres()
                 elif escolha == '2':
-                    self.executar_testes_completos()
+                    self.teste_conectividade()
                 elif escolha == '3':
-                    self.gerar_analises()
+                    self.executar_testes_completos()
                 elif escolha == '4':
-                    self.mostrar_logs()
+                    self.gerar_analises()
                 elif escolha == '5':
                     self.entrar_conteiner_teste()
                 elif escolha == '6':
-                    self.parar_conteineres()
-                elif escolha == '7':
-                    self.limpar_ambiente()
-                elif escolha == '8':
                     self.executar_tudo()
                 elif escolha == '0':
                     self.parar_conteineres()
@@ -337,9 +317,9 @@ def main():
     if len(sys.argv) > 1:
         parser = argparse.ArgumentParser(description='Gerenciador do Projeto Redes II')
         parser.add_argument('comando', choices=[
-            'start', 'iniciar', 'full-test', 'teste-completo',
-            'analyze', 'analisar', 'stop', 'parar', 'clean', 'limpar', 
-            'logs', 'shell', 'all', 'tudo'
+            'start', 'iniciar', 'conectividade', 'teste-conectividade',
+            'full-test', 'teste-completo', 'analyze', 'analisar',
+            'shell', 'all', 'tudo'
         ], help='Comando para executar')
         
         args = parser.parse_args()

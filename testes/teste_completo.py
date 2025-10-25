@@ -5,7 +5,7 @@
 #============================================================================
 
 #Quantidades de clientes simultaneos para testar (altere aqui)
-clientes_teste = [1, 2, 4, 8, 16, 32]
+clientes_teste = [1, 2]
 
 #Numero de requisicoes por cliente em cada teste (altere aqui)  
 requisicoes_por_cliente = 2
