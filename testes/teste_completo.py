@@ -29,10 +29,13 @@ except ImportError as e:
 # ============================================================================
 
 # Quantidades de clientes simultaneos para testar (altere aqui)
-clientes_teste = [1, 5, 10, 20]
+clientes_teste = [1]
 
 # Numero de requisicoes por cliente em cada teste (altere aqui)  
 requisicoes_por_cliente = 2
+
+# Numero de execucoes para cada teste (para calcular media e desvio padrao)
+execucoes_por_teste = 2
 
 # Configuracoes para teste de concorrencia simples
 concorrencia_clientes = 5
@@ -100,7 +103,7 @@ class TestadorAutomatizado:
         self.resultados = {}
         
     def executar_todos_testes(self):
-        #Executa todos os testes automatizados
+        #Executa todos os testes automatizados com multiplas execucoes
         
         #Endereços dos servidores (baseado no docker-compose)
         servidores = {
@@ -110,8 +113,8 @@ class TestadorAutomatizado:
         
         #Diferentes cenários de teste
         cenarios_teste = [
-            {'nome': 'rapido', 'caminho': '/rapido', 'descricao': 'Processamento rápido'},
-            {'nome': 'medio', 'caminho': '/medio', 'descricao': 'Processamento médio (0.5s)'},
+            {'nome': 'rapido', 'caminho': '/rapido', 'descricao': 'Processamento rapido'},
+            {'nome': 'medio', 'caminho': '/medio', 'descricao': 'Processamento medio (0.5s)'},
             {'nome': 'lento', 'caminho': '/lento', 'descricao': 'Processamento lento (2s)'},
         ]
         
@@ -125,18 +128,85 @@ class TestadorAutomatizado:
                 self.resultados[tipo_servidor][cenario['nome']] = {}
                 
                 for num_clientes in clientes_teste:
-                    testador = TestadorCarga(ip_servidor)
-                    resultado = testador.teste_concorrente(
-                        num_clientes, 
-                        requisicoes_por_cliente,
-                        'GET',
-                        cenario['caminho']
-                    )
+                    # Realizar multiplas execucoes para calcular estatisticas
+                    execucoes_resultados = []
                     
-                    self.resultados[tipo_servidor][cenario['nome']][num_clientes] = resultado
+                    for execucao in range(execucoes_por_teste):
+                        testador = TestadorCarga(ip_servidor)
+                        resultado = testador.teste_concorrente(
+                            num_clientes, 
+                            requisicoes_por_cliente,
+                            'GET',
+                            cenario['caminho']
+                        )
+                        execucoes_resultados.append(resultado)
+                        
+                        # Pequena pausa entre execucoes para evitar sobrecarga
+                        time.sleep(0.5)
+                    
+                    # Calcular estatisticas das multiplas execucoes
+                    self.resultados[tipo_servidor][cenario['nome']][num_clientes] = self.calcular_estatisticas(execucoes_resultados)
         
         self.salvar_resultados()
         self.gerar_comparacao()
+    
+    def calcular_estatisticas(self, execucoes_resultados):
+        #Calcula media e desvio padrao das multiplas execucoes
+        if not execucoes_resultados:
+            return None
+            
+        # Extrair metricas de cada execucao
+        throughputs = []
+        tempos_resposta_medios = []
+        taxas_sucesso = []
+        tempos_totais = []
+        
+        for resultado in execucoes_resultados:
+            # Calcular throughput
+            sucessos = len([r for r in resultado['resultados'] if r['sucesso']])
+            throughput = sucessos / resultado['tempo_total'] if resultado['tempo_total'] > 0 else 0
+            throughputs.append(throughput)
+            
+            # Calcular tempo de resposta medio
+            tempos_resposta = [r['tempo_resposta'] for r in resultado['resultados'] if r['sucesso']]
+            tempo_medio = statistics.mean(tempos_resposta) if tempos_resposta else 0
+            tempos_resposta_medios.append(tempo_medio)
+            
+            # Calcular taxa de sucesso
+            total = len(resultado['resultados'])
+            taxa = (sucessos / total * 100) if total > 0 else 0
+            taxas_sucesso.append(taxa)
+            
+            # Tempo total
+            tempos_totais.append(resultado['tempo_total'])
+        
+        # Calcular estatisticas finais
+        resultado_estatistico = {
+            'throughput': {
+                'media': statistics.mean(throughputs),
+                'desvio_padrao': statistics.stdev(throughputs) if len(throughputs) > 1 else 0,
+                'valores': throughputs
+            },
+            'tempo_resposta': {
+                'media': statistics.mean(tempos_resposta_medios),
+                'desvio_padrao': statistics.stdev(tempos_resposta_medios) if len(tempos_resposta_medios) > 1 else 0,
+                'valores': tempos_resposta_medios
+            },
+            'taxa_sucesso': {
+                'media': statistics.mean(taxas_sucesso),
+                'desvio_padrao': statistics.stdev(taxas_sucesso) if len(taxas_sucesso) > 1 else 0,
+                'valores': taxas_sucesso
+            },
+            'tempo_total': {
+                'media': statistics.mean(tempos_totais),
+                'desvio_padrao': statistics.stdev(tempos_totais) if len(tempos_totais) > 1 else 0,
+                'valores': tempos_totais
+            },
+            'execucoes': len(execucoes_resultados),
+            'resultados_detalhados': execucoes_resultados  # Manter para compatibilidade
+        }
+        
+        return resultado_estatistico
     
     def salvar_resultados(self):
         #Salva os resultados finais em arquivo TXT e CSV
@@ -160,7 +230,6 @@ class TestadorAutomatizado:
                     # Estatísticas gerais do servidor
                     total_requisicoes = 0
                     total_sucessos = 0
-                    tempos_servidor = []
                     
                     for cenario in ['rapido', 'medio', 'lento']:
                         if cenario in self.resultados[tipo_servidor]:
@@ -177,87 +246,90 @@ class TestadorAutomatizado:
                                 if num_clientes in self.resultados[tipo_servidor][cenario]:
                                     resultado = self.resultados[tipo_servidor][cenario][num_clientes]
                                     
-                                    sucessos = len([r for r in resultado['resultados'] if r['sucesso']])
-                                    total = len(resultado['resultados'])
-                                    falhas = total - sucessos
-                                    taxa_sucesso = (sucessos / total * 100) if total > 0 else 0
-                                    throughput = sucessos / resultado['tempo_total'] if resultado['tempo_total'] > 0 else 0
+                                    # Usar estatisticas ja calculadas
+                                    throughput_medio = resultado['throughput']['media']
+                                    tempo_resposta_medio = resultado['tempo_resposta']['media']
+                                    taxa_sucesso_media = resultado['taxa_sucesso']['media']
+                                    tempo_total_medio = resultado['tempo_total']['media']
+                                    execucoes = resultado['execucoes']
                                     
-                                    # Acumular estatísticas gerais
-                                    total_requisicoes += total
-                                    total_sucessos += sucessos
-                                    
-                                    if sucessos > 0:
-                                        tempos = [r['tempo_resposta'] for r in resultado['resultados'] if r['sucesso']]
-                                        tempo_medio = sum(tempos) / len(tempos) * 1000  # em ms
-                                        tempo_min = min(tempos) * 1000
-                                        tempo_max = max(tempos) * 1000
-                                        tempos_servidor.extend(tempos)
-                                    else:
-                                        tempo_medio = tempo_min = tempo_max = 0
-                                    
-                                    # Linha principal com métricas
-                                    f.write(f"  {num_clientes:2d} clientes simultaneos:\n")
-                                    f.write(f"    - Requisicoes enviadas: {total}\n")
-                                    f.write(f"    - Sucessos: {sucessos} | Falhas: {falhas} | Taxa: {taxa_sucesso:5.1f}%\n")
-                                    f.write(f"    - Throughput: {throughput:6.2f} req/s\n")
-                                    f.write(f"    - Tempo médio de resposta: {tempo_medio:6.1f}ms\n")
-                                    f.write(f"    - Tempo de execucao total: {resultado['tempo_total']:.2f} segundos\n")
-                                    
-                                    if sucessos > 0:
-                                        f.write(f"    - Detalhes de tempo: Min {tempo_min:5.1f}ms | Max {tempo_max:6.1f}ms\n")
+                                    # Para calcular totais, usar primeiro resultado detalhado
+                                    primeiro_resultado = resultado['resultados_detalhados'][0] if resultado['resultados_detalhados'] else {}
+                                    if primeiro_resultado:
+                                        total_por_execucao = len(primeiro_resultado['resultados'])
+                                        sucessos_por_execucao = len([r for r in primeiro_resultado['resultados'] if r['sucesso']])
+                                        total_requisicoes += total_por_execucao * execucoes
+                                        total_sucessos += sucessos_por_execucao * execucoes
                                         
-                                        # Avaliação qualitativa
-                                        if throughput >= 50:
-                                            avaliacao = "EXCELENTE"
-                                        elif throughput >= 20:
-                                            avaliacao = "MUITO BOM"
-                                        elif throughput >= 10:
-                                            avaliacao = "BOM"
-                                        elif throughput >= 5:
-                                            avaliacao = "REGULAR"
-                                        else:
-                                            avaliacao = "BAIXO"
-                                        
-                                        f.write(f"    - Avaliação de desempenho: {avaliacao}\n")
+                                        # Calcular requisições totais para este teste específico
+                                        requisicoes_teste = total_por_execucao * execucoes
+                                        sucessos_teste = sucessos_por_execucao * execucoes
                                     else:
-                                        f.write(f"    - ERRO: Todas as requisicoes falharam\n")
+                                        requisicoes_teste = 0
+                                        sucessos_teste = 0
+                                    
+                                    # Linha principal com metricas estatisticas
+                                    f.write(f"  {num_clientes:2d} clientes simultaneos (media de {execucoes} execucoes):\n")
+                                    f.write(f"    - Requisicoes enviadas: {requisicoes_teste} total ({total_por_execucao if primeiro_resultado else 0} por execucao)\n")
+                                    f.write(f"    - Sucessos: {sucessos_teste} | Taxa de sucesso media: {taxa_sucesso_media:5.1f}%\n")
+                                    f.write(f"    - Throughput medio: {throughput_medio:.3f} req/s\n")
+                                    f.write(f"    - Tempo medio de resposta: {tempo_resposta_medio*1000:6.1f}ms\n")
+                                    f.write(f"    - Tempo medio de execucao: {tempo_total_medio:.2f} segundos\n")
+                                    
+                                    # Avaliacao qualitativa baseada no throughput medio
+                                    if throughput_medio >= 50:
+                                        avaliacao = "EXCELENTE"
+                                    elif throughput_medio >= 20:
+                                        avaliacao = "MUITO BOM"
+                                    elif throughput_medio >= 10:
+                                        avaliacao = "BOM"
+                                    elif throughput_medio >= 5:
+                                        avaliacao = "REGULAR"
+                                    else:
+                                        avaliacao = "BAIXO"
+                                    
+                                    f.write(f"    - Avaliacao de desempenho: {avaliacao}\n")
+                                    
+                                    # Mostrar desvios padrao para avaliar consistencia
+                                    throughput_desvio = resultado['throughput']['desvio_padrao']
+                                    tempo_desvio = resultado['tempo_resposta']['desvio_padrao']
+                                    f.write(f"    - Desvio Padrao: Throughput +/-{throughput_desvio:.3f}, Tempo +/-{tempo_desvio*1000:.1f}ms\n")
                                     
                                     f.write(f"\n")
                     
-                    # Resumo geral do servidor
+                    # Resumo geral do servidor baseado nas estatisticas
                     if total_requisicoes > 0:
                         taxa_geral = (total_sucessos / total_requisicoes * 100)
                         f.write(f"{'-'*60}\n")
                         f.write(f"RESUMO GERAL DO SERVIDOR {tipo_servidor.upper()}:\n")
-                        f.write(f"  - Total de requisicoes processadas: {total_requisicoes}\n")
-                        f.write(f"  - Taxa de sucesso geral: {taxa_geral:.1f}%\n")
+                        f.write(f"  - Total de requisicoes estimadas: {total_requisicoes}\n")
+                        f.write(f"  - Taxa de sucesso estimada: {taxa_geral:.1f}%\n")
                         
-                        if tempos_servidor:
-                            tempo_medio_geral = sum(tempos_servidor) / len(tempos_servidor) * 1000
-                            f.write(f"  - Tempo médio geral: {tempo_medio_geral:.1f}ms\n")
-                            
-                            # Classificacao geral
-                            if taxa_geral >= 99:
-                                classificacao = "EXCELENTE - Sistema muito confiavel"
-                            elif taxa_geral >= 95:
-                                classificacao = "MUITO BOM - Sistema confiavel"
-                            elif taxa_geral >= 90:
-                                classificacao = "BOM - Sistema estavel"
-                            elif taxa_geral >= 80:
-                                classificacao = "REGULAR - Necessita melhorias"
-                            else:
-                                classificacao = "CRITICO - Sistema instavel"
-                            
-                            f.write(f"  - Classificacao: {classificacao}\n")
+                        # Classificacao geral baseada na taxa de sucesso
+                        if taxa_geral >= 99:
+                            classificacao = "EXCELENTE - Sistema muito confiavel"
+                        elif taxa_geral >= 95:
+                            classificacao = "MUITO BOM - Sistema confiavel"
+                        elif taxa_geral >= 90:
+                            classificacao = "BOM - Sistema estavel"
+                        elif taxa_geral >= 80:
+                            classificacao = "REGULAR - Necessita melhorias"
+                        else:
+                            classificacao = "CRITICO - Sistema instavel"
+                        
+                        f.write(f"  - Classificacao: {classificacao}\n")
+                    else:
+                        f.write(f"{'-'*60}\n")
+                        f.write(f"RESUMO GERAL DO SERVIDOR {tipo_servidor.upper()}:\n")
+                        f.write(f"  - Nenhum dado de teste disponivel\n")
             
-            # Comparação detalhada entre servidores
+            # Comparacao detalhada entre servidores
             f.write(f"\n{'='*80}\n")
-            f.write("                  COMPARAÇÃO DETALHADA ENTRE SERVIDORES\n")
+            f.write("                  COMPARACAO DETALHADA ENTRE SERVIDORES\n")
             f.write(f"{'='*80}\n")
             
             if 'sequencial' in self.resultados and 'concorrente' in self.resultados:
-                # Cabeçalho da tabela de comparação
+                # Cabecalho da tabela de comparacao
                 f.write(f"\nFormato: [Cenario] Clientes -> Sequencial vs Concorrente (Diferenca)\n")
                 f.write(f"{'-'*80}\n")
                 
@@ -282,28 +354,15 @@ class TestadorAutomatizado:
                                 seq = self.resultados['sequencial'][cenario][num_clientes]
                                 conc = self.resultados['concorrente'][cenario][num_clientes]
                                 
-                                seq_sucessos = len([r for r in seq['resultados'] if r['sucesso']])
-                                conc_sucessos = len([r for r in conc['resultados'] if r['sucesso']])
-                                
-                                seq_throughput = seq_sucessos / seq['tempo_total'] if seq['tempo_total'] > 0 else 0
-                                conc_throughput = conc_sucessos / conc['tempo_total'] if conc['tempo_total'] > 0 else 0
-                                
-                                # Calcular tempos médios
-                                if seq_sucessos > 0:
-                                    seq_tempos = [r['tempo_resposta'] for r in seq['resultados'] if r['sucesso']]
-                                    seq_tempo_medio = sum(seq_tempos) / len(seq_tempos) * 1000
-                                else:
-                                    seq_tempo_medio = 0
-                                    
-                                if conc_sucessos > 0:
-                                    conc_tempos = [r['tempo_resposta'] for r in conc['resultados'] if r['sucesso']]
-                                    conc_tempo_medio = sum(conc_tempos) / len(conc_tempos) * 1000
-                                else:
-                                    conc_tempo_medio = 0
+                                # Usar estatisticas pre-calculadas
+                                seq_throughput = seq['throughput']['media']
+                                conc_throughput = conc['throughput']['media']
+                                seq_tempo_medio = seq['tempo_resposta']['media'] * 1000  # converter para ms
+                                conc_tempo_medio = conc['tempo_resposta']['media'] * 1000  # converter para ms
                                 
                                 f.write(f"  {num_clientes:2d} clientes simultaneos:\n")
-                                f.write(f"    + Sequencial:  {seq_throughput:6.2f} req/s | Tempo médio: {seq_tempo_medio:6.1f}ms\n")
-                                f.write(f"    + Concorrente: {conc_throughput:6.2f} req/s | Tempo médio: {conc_tempo_medio:6.1f}ms\n")
+                                f.write(f"    + Sequencial:  {seq_throughput:6.3f} req/s | Tempo medio: {seq_tempo_medio:6.1f}ms\n")
+                                f.write(f"    + Concorrente: {conc_throughput:6.3f} req/s | Tempo medio: {conc_tempo_medio:6.1f}ms\n")
                                 
                                 if seq_throughput > 0 and conc_throughput > 0:
                                     melhoria_throughput = ((conc_throughput - seq_throughput) / seq_throughput) * 100
@@ -360,7 +419,7 @@ class TestadorAutomatizado:
         print(f"\n[SUCESSO] Resultados finais salvos em {nome_arquivo}")
     
     def gerar_csv(self):
-        """Gera arquivo CSV com todos os resultados dos testes"""
+        """Gera arquivo CSV com todos os resultados dos testes incluindo estatisticas"""
         import csv
         
         nome_arquivo_csv = '/app/resultados/resultados_completos.csv'
@@ -368,9 +427,11 @@ class TestadorAutomatizado:
         try:
             with open(nome_arquivo_csv, 'w', newline='', encoding='utf-8') as csvfile:
                 fieldnames = [
-                    'servidor', 'cenario', 'num_clientes', 'requisicoes_enviadas', 
-                    'sucessos', 'falhas', 'taxa_sucesso', 'throughput', 
-                    'tempo_total', 'tempo_medio_ms', 'tempo_min_ms', 'tempo_max_ms'
+                    'servidor', 'cenario', 'num_clientes', 'execucoes',
+                    'throughput_media', 'throughput_desvio', 
+                    'tempo_resposta_media', 'tempo_resposta_desvio',
+                    'taxa_sucesso_media', 'taxa_sucesso_desvio',
+                    'tempo_total_media', 'tempo_total_desvio'
                 ]
                 
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -385,35 +446,20 @@ class TestadorAutomatizado:
                                     if num_clientes in self.resultados[tipo_servidor][cenario]:
                                         resultado = self.resultados[tipo_servidor][cenario][num_clientes]
                                         
-                                        # Calcular métricas
-                                        sucessos = len([r for r in resultado['resultados'] if r['sucesso']])
-                                        total = len(resultado['resultados'])
-                                        falhas = total - sucessos
-                                        taxa_sucesso = (sucessos / total * 100) if total > 0 else 0
-                                        throughput = sucessos / resultado['tempo_total'] if resultado['tempo_total'] > 0 else 0
-                                        
-                                        if sucessos > 0:
-                                            tempos = [r['tempo_resposta'] for r in resultado['resultados'] if r['sucesso']]
-                                            tempo_medio = sum(tempos) / len(tempos) * 1000  # em ms
-                                            tempo_min = min(tempos) * 1000
-                                            tempo_max = max(tempos) * 1000
-                                        else:
-                                            tempo_medio = tempo_min = tempo_max = 0
-                                        
-                                        # Escrever linha no CSV
+                                        # Escrever linha no CSV com estatisticas
                                         writer.writerow({
                                             'servidor': tipo_servidor,
                                             'cenario': cenario,
                                             'num_clientes': num_clientes,
-                                            'requisicoes_enviadas': total,
-                                            'sucessos': sucessos,
-                                            'falhas': falhas,
-                                            'taxa_sucesso': round(taxa_sucesso, 1),
-                                            'throughput': round(throughput, 2),
-                                            'tempo_total': round(resultado['tempo_total'], 2),
-                                            'tempo_medio_ms': round(tempo_medio, 1),
-                                            'tempo_min_ms': round(tempo_min, 1),
-                                            'tempo_max_ms': round(tempo_max, 1)
+                                            'execucoes': resultado['execucoes'],
+                                            'throughput_media': round(resultado['throughput']['media'], 3),
+                                            'throughput_desvio': round(resultado['throughput']['desvio_padrao'], 3),
+                                            'tempo_resposta_media': round(resultado['tempo_resposta']['media'] * 1000, 1),  # em ms
+                                            'tempo_resposta_desvio': round(resultado['tempo_resposta']['desvio_padrao'] * 1000, 1),  # em ms
+                                            'taxa_sucesso_media': round(resultado['taxa_sucesso']['media'], 1),
+                                            'taxa_sucesso_desvio': round(resultado['taxa_sucesso']['desvio_padrao'], 1),
+                                            'tempo_total_media': round(resultado['tempo_total']['media'], 2),
+                                            'tempo_total_desvio': round(resultado['tempo_total']['desvio_padrao'], 2)
                                         })
             
             pass  # Arquivo CSV gerado silenciosamente
@@ -422,8 +468,8 @@ class TestadorAutomatizado:
             print(f"[ERRO] Falha ao gerar CSV: {e}")
     
     def gerar_comparacao(self):
-        #Gera comparação entre servidores
-        print("\n=== COMPARAÇÃO ENTRE SERVIDORES ===")
+        #Gera comparação entre servidores com estatisticas
+        print("\n=== COMPARAÇÃO ENTRE SERVIDORES (ESTATÍSTICAS) ===")
         
         if 'sequencial' in self.resultados and 'concorrente' in self.resultados:
             for cenario in ['rapido', 'medio', 'lento']:
@@ -437,15 +483,14 @@ class TestadorAutomatizado:
                             seq = self.resultados['sequencial'][cenario][num_clientes]
                             conc = self.resultados['concorrente'][cenario][num_clientes]
                             
-                            seq_sucessos = len([r for r in seq['resultados'] if r['sucesso']])
-                            conc_sucessos = len([r for r in conc['resultados'] if r['sucesso']])
+                            seq_throughput = seq['throughput']['media']
+                            conc_throughput = conc['throughput']['media']
+                            seq_desvio = seq['throughput']['desvio_padrao']
+                            conc_desvio = conc['throughput']['desvio_padrao']
                             
-                            seq_throughput = seq_sucessos / seq['tempo_total'] if seq['tempo_total'] > 0 else 0
-                            conc_throughput = conc_sucessos / conc['tempo_total'] if conc['tempo_total'] > 0 else 0
-                            
-                            print(f"  {num_clientes} clientes:")
-                            print(f"    Sequencial: {seq_throughput:.2f} req/s")
-                            print(f"    Concorrente: {conc_throughput:.2f} req/s")
+                            print(f"  {num_clientes} clientes (media +/- desvio de {seq['execucoes']} execucoes):")
+                            print(f"    Sequencial: {seq_throughput:.3f} +/- {seq_desvio:.3f} req/s")
+                            print(f"    Concorrente: {conc_throughput:.3f} +/- {conc_desvio:.3f} req/s")
                             
                             if seq_throughput > 0:
                                 melhoria = ((conc_throughput - seq_throughput) / seq_throughput) * 100

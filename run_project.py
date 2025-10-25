@@ -217,7 +217,7 @@ class ProjetoRedes:
             return False
         
         print("")
-        resposta = input("Executar testes completos? (pode demorar 10-15 minutos) [y/N]: ").lower()
+        resposta = input("Executar testes completos? (pode demorar 10-15 minutos) [Y/N]: ").lower()
         
         if resposta in ['y', 'yes', 's', 'sim']:
             if self.executar_testes_completos():
