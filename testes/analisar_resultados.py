@@ -293,7 +293,7 @@ class AnalisadorResultados:
                            markersize=10, capsize=5, capthick=2, alpha=0.8)
             
             execucoes = self.df['execucoes'].iloc[0] if not self.df.empty else 10
-            plt.title(f'Tempo Total de Execução - Cenário {cenarios_nomes[i]}\n(Média ± Desvio Padrão de {execucoes} execuções)', 
+            plt.title(f'Tempo Total de Execução - Cenário {cenarios_nomes[i]}\n(Média +/- Desvio Padrão de {execucoes} execuções)', 
                      fontsize=16, fontweight='bold', pad=20)
             plt.xlabel('Número de Requisições', fontsize=14, fontweight='bold')
             plt.ylabel('Tempo Total de Execução (s)', fontsize=14, fontweight='bold')

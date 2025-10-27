@@ -5,13 +5,13 @@
 #============================================================================
 
 #Quantidades de clientes simultaneos para testar (altere aqui)
-clientes_teste = [1, 2]
+clientes_teste = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
 
 #Numero de requisicoes por cliente em cada teste (altere aqui)  
 requisicoes_por_cliente = 2
 
 #Numero de execucoes para cada teste (para calcular media e desvio padrao)
-execucoes_por_teste = 2
+execucoes_por_teste = 10
 
 concorrencia_clientes = 5
 concorrencia_requisicoes = 3

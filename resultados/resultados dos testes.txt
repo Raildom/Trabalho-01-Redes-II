@@ -1,0 +1,764 @@
+ID Personalizado: 40093cb61c18ade519baca198537dd16
+
+================================================================================
+SERVIDOR SEQUENCIAL
+================================================================================
+
+[RAPIDO - Processamento Instantaneo]
+------------------------------------------------------------
+   1 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 20 total (2 por execucao)
+    - Sucessos: 20 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 85.820 req/s
+    - Tempo medio de resposta:    0.8ms
+    - Tempo medio de execucao: 0.02 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-0.680, Tempo +/-0.0ms
+
+   2 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 40 total (4 por execucao)
+    - Sucessos: 40 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 170.402 req/s
+    - Tempo medio de resposta:    0.8ms
+    - Tempo medio de execucao: 0.02 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-2.437, Tempo +/-0.1ms
+
+   4 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 80 total (8 por execucao)
+    - Sucessos: 80 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 10.440 req/s
+    - Tempo medio de resposta:  117.8ms
+    - Tempo medio de execucao: 0.96 segundos
+    - Avaliacao de desempenho: BOM
+    - Desvio Padrao: Throughput +/-8.707, Tempo +/-32.2ms
+
+   8 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 160 total (16 por execucao)
+    - Sucessos: 160 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 14.499 req/s
+    - Tempo medio de resposta:  205.3ms
+    - Tempo medio de execucao: 1.11 segundos
+    - Avaliacao de desempenho: BOM
+    - Desvio Padrao: Throughput +/-1.271, Tempo +/-98.8ms
+
+  16 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 320 total (32 por execucao)
+    - Sucessos: 320 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 19.285 req/s
+    - Tempo medio de resposta:  340.5ms
+    - Tempo medio de execucao: 1.71 segundos
+    - Avaliacao de desempenho: BOM
+    - Desvio Padrao: Throughput +/-3.641, Tempo +/-95.1ms
+
+  32 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 640 total (64 por execucao)
+    - Sucessos: 640 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 30.116 req/s
+    - Tempo medio de resposta:  344.0ms
+    - Tempo medio de execucao: 2.35 segundos
+    - Avaliacao de desempenho: MUITO BOM
+    - Desvio Padrao: Throughput +/-9.263, Tempo +/-118.0ms
+
+  64 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 1280 total (128 por execucao)
+    - Sucessos: 1280 | Taxa de sucesso media:  97.7%
+    - Throughput medio: 23.246 req/s
+    - Tempo medio de resposta:  717.1ms
+    - Tempo medio de execucao: 7.63 segundos
+    - Avaliacao de desempenho: MUITO BOM
+    - Desvio Padrao: Throughput +/-15.462, Tempo +/-281.2ms
+
+  128 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 2560 total (256 por execucao)
+    - Sucessos: 2370 | Taxa de sucesso media:  87.9%
+    - Throughput medio: 17.764 req/s
+    - Tempo medio de resposta:  831.1ms
+    - Tempo medio de execucao: 12.74 segundos
+    - Avaliacao de desempenho: BOM
+    - Desvio Padrao: Throughput +/-2.072, Tempo +/-225.5ms
+
+  256 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 5120 total (512 por execucao)
+    - Sucessos: 3820 | Taxa de sucesso media:  77.0%
+    - Throughput medio: 21.551 req/s
+    - Tempo medio de resposta: 1225.0ms
+    - Tempo medio de execucao: 20.09 segundos
+    - Avaliacao de desempenho: MUITO BOM
+    - Desvio Padrao: Throughput +/-8.245, Tempo +/-321.5ms
+
+  512 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 10240 total (1024 por execucao)
+    - Sucessos: 6820 | Taxa de sucesso media:  72.5%
+    - Throughput medio: 30.570 req/s
+    - Tempo medio de resposta: 1261.2ms
+    - Tempo medio de execucao: 24.57 segundos
+    - Avaliacao de desempenho: MUITO BOM
+    - Desvio Padrao: Throughput +/-4.606, Tempo +/-226.0ms
+
+
+[MEDIO - Processamento 0.5 segundos]
+------------------------------------------------------------
+   1 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 20 total (2 por execucao)
+    - Sucessos: 20 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1.816 req/s
+    - Tempo medio de resposta:  614.6ms
+    - Tempo medio de execucao: 1.25 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.424, Tempo +/-356.6ms
+
+   2 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 40 total (4 por execucao)
+    - Sucessos: 40 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1.982 req/s
+    - Tempo medio de resposta:  872.6ms
+    - Tempo medio de execucao: 2.02 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.2ms
+
+   4 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 80 total (8 por execucao)
+    - Sucessos: 80 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1.909 req/s
+    - Tempo medio de resposta: 1458.3ms
+    - Tempo medio de execucao: 4.20 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.078, Tempo +/-21.5ms
+
+   8 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 160 total (16 por execucao)
+    - Sucessos: 160 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1.795 req/s
+    - Tempo medio de resposta: 2583.2ms
+    - Tempo medio de execucao: 8.98 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.157, Tempo +/-62.3ms
+
+  16 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 320 total (32 por execucao)
+    - Sucessos: 290 | Taxa de sucesso media:  77.5%
+    - Throughput medio: 1.564 req/s
+    - Tempo medio de resposta: 3218.4ms
+    - Tempo medio de execucao: 16.65 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.506, Tempo +/-867.1ms
+
+  32 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 640 total (64 por execucao)
+    - Sucessos: 320 | Taxa de sucesso media:  56.6%
+    - Throughput medio: 1.324 req/s
+    - Tempo medio de resposta: 5639.0ms
+    - Tempo medio de execucao: 27.37 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.334, Tempo +/-1203.0ms
+
+  64 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 1280 total (128 por execucao)
+    - Sucessos: 100 | Taxa de sucesso media:  22.0%
+    - Throughput medio: 1.074 req/s
+    - Tempo medio de resposta: 4556.8ms
+    - Tempo medio de execucao: 25.41 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.612, Tempo +/-1892.8ms
+
+  128 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 2560 total (256 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 20.08 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  256 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 5120 total (512 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 20.20 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  512 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 10240 total (1024 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 20.18 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+
+[LENTO - Processamento 2.0 segundos]
+------------------------------------------------------------
+   1 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 20 total (2 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 6.72 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+   2 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 40 total (4 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 6.16 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+   4 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 80 total (8 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 6.10 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+   8 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 160 total (16 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 6.16 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  16 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 320 total (32 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 6.16 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  32 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 640 total (64 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 6.05 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  64 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 1280 total (128 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 8.27 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  128 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 2560 total (256 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 17.20 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  256 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 5120 total (512 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 19.94 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+  512 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 10240 total (1024 por execucao)
+    - Sucessos: 0 | Taxa de sucesso media:   0.0%
+    - Throughput medio: 0.000 req/s
+    - Tempo medio de resposta:    0.0ms
+    - Tempo medio de execucao: 20.25 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+------------------------------------------------------------
+RESUMO GERAL DO SERVIDOR SEQUENCIAL:
+  - Total de requisicoes estimadas: 61380
+  - Taxa de sucesso estimada: 27.0%
+  - Classificacao: CRITICO - Sistema instavel
+
+================================================================================
+SERVIDOR CONCORRENTE
+================================================================================
+
+[RAPIDO - Processamento Instantaneo]
+------------------------------------------------------------
+   1 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 20 total (2 por execucao)
+    - Sucessos: 20 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 79.679 req/s
+    - Tempo medio de resposta:    1.7ms
+    - Tempo medio de execucao: 0.03 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-1.698, Tempo +/-0.3ms
+
+   2 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 40 total (4 por execucao)
+    - Sucessos: 40 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 157.628 req/s
+    - Tempo medio de resposta:    1.5ms
+    - Tempo medio de execucao: 0.03 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-2.511, Tempo +/-0.2ms
+
+   4 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 80 total (8 por execucao)
+    - Sucessos: 80 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 283.953 req/s
+    - Tempo medio de resposta:    1.8ms
+    - Tempo medio de execucao: 0.03 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-47.052, Tempo +/-0.3ms
+
+   8 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 160 total (16 por execucao)
+    - Sucessos: 160 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 519.868 req/s
+    - Tempo medio de resposta:    2.4ms
+    - Tempo medio de execucao: 0.03 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-11.690, Tempo +/-0.3ms
+
+  16 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 320 total (32 por execucao)
+    - Sucessos: 320 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 883.826 req/s
+    - Tempo medio de resposta:    2.9ms
+    - Tempo medio de execucao: 0.04 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-25.963, Tempo +/-0.6ms
+
+  32 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 640 total (64 por execucao)
+    - Sucessos: 640 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1373.138 req/s
+    - Tempo medio de resposta:    3.7ms
+    - Tempo medio de execucao: 0.05 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-20.413, Tempo +/-0.4ms
+
+  64 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 1280 total (128 por execucao)
+    - Sucessos: 1280 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1623.057 req/s
+    - Tempo medio de resposta:    5.8ms
+    - Tempo medio de execucao: 0.08 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-30.465, Tempo +/-1.0ms
+
+  128 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 2560 total (256 por execucao)
+    - Sucessos: 2560 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1794.971 req/s
+    - Tempo medio de resposta:    7.8ms
+    - Tempo medio de execucao: 0.15 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-252.202, Tempo +/-1.6ms
+
+  256 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 5120 total (512 por execucao)
+    - Sucessos: 5120 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 2003.468 req/s
+    - Tempo medio de resposta:    8.9ms
+    - Tempo medio de execucao: 0.26 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-18.658, Tempo +/-1.2ms
+
+  512 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 10240 total (1024 por execucao)
+    - Sucessos: 10240 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 2037.555 req/s
+    - Tempo medio de resposta:   12.1ms
+    - Tempo medio de execucao: 0.50 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-118.795, Tempo +/-2.2ms
+
+
+[MEDIO - Processamento 0.5 segundos]
+------------------------------------------------------------
+   1 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 20 total (2 por execucao)
+    - Sucessos: 20 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1.947 req/s
+    - Tempo medio de resposta:  502.5ms
+    - Tempo medio de execucao: 1.03 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.001, Tempo +/-0.2ms
+
+   2 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 40 total (4 por execucao)
+    - Sucessos: 40 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 3.894 req/s
+    - Tempo medio de resposta:  502.5ms
+    - Tempo medio de execucao: 1.03 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.002, Tempo +/-0.2ms
+
+   4 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 80 total (8 por execucao)
+    - Sucessos: 80 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 7.782 req/s
+    - Tempo medio de resposta:  502.6ms
+    - Tempo medio de execucao: 1.03 segundos
+    - Avaliacao de desempenho: REGULAR
+    - Desvio Padrao: Throughput +/-0.003, Tempo +/-0.2ms
+
+   8 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 160 total (16 por execucao)
+    - Sucessos: 160 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 15.526 req/s
+    - Tempo medio de resposta:  502.7ms
+    - Tempo medio de execucao: 1.03 segundos
+    - Avaliacao de desempenho: BOM
+    - Desvio Padrao: Throughput +/-0.012, Tempo +/-0.3ms
+
+  16 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 320 total (32 por execucao)
+    - Sucessos: 320 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 30.908 req/s
+    - Tempo medio de resposta:  503.0ms
+    - Tempo medio de execucao: 1.04 segundos
+    - Avaliacao de desempenho: MUITO BOM
+    - Desvio Padrao: Throughput +/-0.053, Tempo +/-0.5ms
+
+  32 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 640 total (64 por execucao)
+    - Sucessos: 640 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 61.321 req/s
+    - Tempo medio de resposta:  503.9ms
+    - Tempo medio de execucao: 1.04 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-0.093, Tempo +/-0.7ms
+
+  64 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 1280 total (128 por execucao)
+    - Sucessos: 1280 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 119.815 req/s
+    - Tempo medio de resposta:  508.8ms
+    - Tempo medio de execucao: 1.07 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-0.292, Tempo +/-0.5ms
+
+  128 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 2560 total (256 por execucao)
+    - Sucessos: 2560 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 227.559 req/s
+    - Tempo medio de resposta:  517.9ms
+    - Tempo medio de execucao: 1.13 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-6.574, Tempo +/-2.5ms
+
+  256 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 5120 total (512 por execucao)
+    - Sucessos: 5120 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 246.240 req/s
+    - Tempo medio de resposta:  643.8ms
+    - Tempo medio de execucao: 2.11 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-35.742, Tempo +/-65.4ms
+
+  512 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 10240 total (1024 por execucao)
+    - Sucessos: 10240 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 436.561 req/s
+    - Tempo medio de resposta:  742.7ms
+    - Tempo medio de execucao: 2.35 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-11.604, Tempo +/-28.1ms
+
+
+[LENTO - Processamento 2.0 segundos]
+------------------------------------------------------------
+   1 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 20 total (2 por execucao)
+    - Sucessos: 20 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 0.496 req/s
+    - Tempo medio de resposta: 2004.1ms
+    - Tempo medio de execucao: 4.03 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.0ms
+
+   2 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 40 total (4 por execucao)
+    - Sucessos: 40 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 0.992 req/s
+    - Tempo medio de resposta: 2004.1ms
+    - Tempo medio de execucao: 4.03 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.4ms
+
+   4 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 80 total (8 por execucao)
+    - Sucessos: 80 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 1.985 req/s
+    - Tempo medio de resposta: 2003.9ms
+    - Tempo medio de execucao: 4.03 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.000, Tempo +/-0.1ms
+
+   8 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 160 total (16 por execucao)
+    - Sucessos: 160 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 3.967 req/s
+    - Tempo medio de resposta: 2004.2ms
+    - Tempo medio de execucao: 4.03 segundos
+    - Avaliacao de desempenho: BAIXO
+    - Desvio Padrao: Throughput +/-0.001, Tempo +/-0.3ms
+
+  16 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 320 total (32 por execucao)
+    - Sucessos: 320 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 7.924 req/s
+    - Tempo medio de resposta: 2004.6ms
+    - Tempo medio de execucao: 4.04 segundos
+    - Avaliacao de desempenho: REGULAR
+    - Desvio Padrao: Throughput +/-0.002, Tempo +/-0.5ms
+
+  32 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 640 total (64 por execucao)
+    - Sucessos: 640 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 15.811 req/s
+    - Tempo medio de resposta: 2005.9ms
+    - Tempo medio de execucao: 4.05 segundos
+    - Avaliacao de desempenho: BOM
+    - Desvio Padrao: Throughput +/-0.007, Tempo +/-0.7ms
+
+  64 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 1280 total (128 por execucao)
+    - Sucessos: 1280 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 31.435 req/s
+    - Tempo medio de resposta: 2010.7ms
+    - Tempo medio de execucao: 4.07 segundos
+    - Avaliacao de desempenho: MUITO BOM
+    - Desvio Padrao: Throughput +/-0.018, Tempo +/-1.0ms
+
+  128 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 2560 total (256 por execucao)
+    - Sucessos: 2560 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 61.988 req/s
+    - Tempo medio de resposta: 2019.1ms
+    - Tempo medio de execucao: 4.13 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-0.620, Tempo +/-3.4ms
+
+  256 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 5120 total (512 por execucao)
+    - Sucessos: 5120 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 98.546 req/s
+    - Tempo medio de resposta: 2211.9ms
+    - Tempo medio de execucao: 5.20 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-0.118, Tempo +/-21.2ms
+
+  512 clientes simultaneos (media de 10 execucoes):
+    - Requisicoes enviadas: 10240 total (1024 por execucao)
+    - Sucessos: 10240 | Taxa de sucesso media: 100.0%
+    - Throughput medio: 193.545 req/s
+    - Tempo medio de resposta: 2214.6ms
+    - Tempo medio de execucao: 5.29 segundos
+    - Avaliacao de desempenho: EXCELENTE
+    - Desvio Padrao: Throughput +/-1.442, Tempo +/-33.5ms
+
+------------------------------------------------------------
+RESUMO GERAL DO SERVIDOR CONCORRENTE:
+  - Total de requisicoes estimadas: 61380
+  - Taxa de sucesso estimada: 100.0%
+  - Classificacao: EXCELENTE - Sistema muito confiavel
+
+================================================================================
+                  COMPARACAO DETALHADA ENTRE SERVIDORES
+================================================================================
+
+Formato: [Cenario] Clientes -> Sequencial vs Concorrente (Diferenca)
+--------------------------------------------------------------------------------
+
+[RAPIDO - Processamento Instantaneo]
+   1 clientes simultaneos:
+    + Sequencial:  85.820 req/s | Tempo medio:    0.8ms
+    + Concorrente: 79.679 req/s | Tempo medio:    1.7ms
+    > Throughput: SEQUENCIAL MELHOR ( -7.2%)
+    > Tempo resposta: SEQUENCIAL MUITO MAIS RAPIDO (+102.4%)
+
+   2 clientes simultaneos:
+    + Sequencial:  170.402 req/s | Tempo medio:    0.8ms
+    + Concorrente: 157.628 req/s | Tempo medio:    1.5ms
+    > Throughput: SEQUENCIAL MELHOR ( -7.5%)
+    > Tempo resposta: SEQUENCIAL MUITO MAIS RAPIDO (+ 90.9%)
+
+   4 clientes simultaneos:
+    + Sequencial:  10.440 req/s | Tempo medio:  117.8ms
+    + Concorrente: 283.953 req/s | Tempo medio:    1.8ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+2619.8%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 98.5%)
+
+   8 clientes simultaneos:
+    + Sequencial:  14.499 req/s | Tempo medio:  205.3ms
+    + Concorrente: 519.868 req/s | Tempo medio:    2.4ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+3485.5%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 98.8%)
+
+  16 clientes simultaneos:
+    + Sequencial:  19.285 req/s | Tempo medio:  340.5ms
+    + Concorrente: 883.826 req/s | Tempo medio:    2.9ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+4482.9%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 99.1%)
+
+  32 clientes simultaneos:
+    + Sequencial:  30.116 req/s | Tempo medio:  344.0ms
+    + Concorrente: 1373.138 req/s | Tempo medio:    3.7ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+4459.5%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 98.9%)
+
+  64 clientes simultaneos:
+    + Sequencial:  23.246 req/s | Tempo medio:  717.1ms
+    + Concorrente: 1623.057 req/s | Tempo medio:    5.8ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+6882.1%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 99.2%)
+
+  128 clientes simultaneos:
+    + Sequencial:  17.764 req/s | Tempo medio:  831.1ms
+    + Concorrente: 1794.971 req/s | Tempo medio:    7.8ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+10004.8%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 99.1%)
+
+  256 clientes simultaneos:
+    + Sequencial:  21.551 req/s | Tempo medio: 1225.0ms
+    + Concorrente: 2003.468 req/s | Tempo medio:    8.9ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+9196.3%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 99.3%)
+
+  512 clientes simultaneos:
+    + Sequencial:  30.570 req/s | Tempo medio: 1261.2ms
+    + Concorrente: 2037.555 req/s | Tempo medio:   12.1ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+6565.1%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 99.0%)
+
+  Resumo do cenario RAPIDO:
+    * CONCORRENTE MUITO SUPERIOR (media +4768.1%)
+
+
+[MEDIO - Processamento 0.5s]
+   1 clientes simultaneos:
+    + Sequencial:   1.816 req/s | Tempo medio:  614.6ms
+    + Concorrente:  1.947 req/s | Tempo medio:  502.5ms
+    > Throughput: CONCORRENTE MELHOR (+  7.2%)
+    > Tempo resposta: CONCORRENTE MAIS RAPIDO (- 18.2%)
+
+   2 clientes simultaneos:
+    + Sequencial:   1.982 req/s | Tempo medio:  872.6ms
+    + Concorrente:  3.894 req/s | Tempo medio:  502.5ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+ 96.5%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 42.4%)
+
+   4 clientes simultaneos:
+    + Sequencial:   1.909 req/s | Tempo medio: 1458.3ms
+    + Concorrente:  7.782 req/s | Tempo medio:  502.6ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+307.7%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 65.5%)
+
+   8 clientes simultaneos:
+    + Sequencial:   1.795 req/s | Tempo medio: 2583.2ms
+    + Concorrente: 15.526 req/s | Tempo medio:  502.7ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+765.1%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 80.5%)
+
+  16 clientes simultaneos:
+    + Sequencial:   1.564 req/s | Tempo medio: 3218.4ms
+    + Concorrente: 30.908 req/s | Tempo medio:  503.0ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+1876.2%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 84.4%)
+
+  32 clientes simultaneos:
+    + Sequencial:   1.324 req/s | Tempo medio: 5639.0ms
+    + Concorrente: 61.321 req/s | Tempo medio:  503.9ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+4533.2%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 91.1%)
+
+  64 clientes simultaneos:
+    + Sequencial:   1.074 req/s | Tempo medio: 4556.8ms
+    + Concorrente: 119.815 req/s | Tempo medio:  508.8ms
+    > Throughput: CONCORRENTE MUITO MELHOR (+11053.6%)
+    > Tempo resposta: CONCORRENTE MUITO MAIS RAPIDO (- 88.8%)
+
+  128 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 227.559 req/s | Tempo medio:  517.9ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  256 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 246.240 req/s | Tempo medio:  643.8ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  512 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 436.561 req/s | Tempo medio:  742.7ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  Resumo do cenario MEDIO:
+    * CONCORRENTE MUITO SUPERIOR (media +2662.8%)
+
+
+[LENTO - Processamento 2.0s]
+   1 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente:  0.496 req/s | Tempo medio: 2004.1ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+   2 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente:  0.992 req/s | Tempo medio: 2004.1ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+   4 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente:  1.985 req/s | Tempo medio: 2003.9ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+   8 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente:  3.967 req/s | Tempo medio: 2004.2ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  16 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente:  7.924 req/s | Tempo medio: 2004.6ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  32 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 15.811 req/s | Tempo medio: 2005.9ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  64 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 31.435 req/s | Tempo medio: 2010.7ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  128 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 61.988 req/s | Tempo medio: 2019.1ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  256 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 98.546 req/s | Tempo medio: 2211.9ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+  512 clientes simultaneos:
+    + Sequencial:   0.000 req/s | Tempo medio:    0.0ms
+    + Concorrente: 193.545 req/s | Tempo medio: 2214.6ms
+    > ERRO: No foi possvel comparar (falhas nas requisies)
+
+
