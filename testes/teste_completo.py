@@ -14,7 +14,7 @@ requisicoes_por_cliente = 2
 execucoes_por_teste = 10
 
 concorrencia_clientes = 5
-concorrencia_requisicoes = 3
+concorrencia_requisicoes = 2
 
 import sys
 import os
