@@ -1,5 +1,10 @@
 # Trabalho de Redes II - Servidores HTTP
 
+## Aluno: 
+   Raildom da Rocha Sobrinho
+## Matrícula: 
+   20239057601
+
 ## Link do GITHUB
 
 **Repositório**: [https://github.com/Raildom/Trabalho-01-Redes-II.git]
@@ -105,10 +110,10 @@ docker exec -it cliente_teste bash
 Dentro do container, você pode executar comandos manualmente:
 ```bash
 #Testar servidor sequencial
-python3 -c "from src.cliente import ClienteHTTP; c = ClienteHTTP('76.1.0.10'); print(c.enviar_requisicao('GET', '/'))"
+PYTHONPATH=/app/src python3 -c "from src.cliente import ClienteHTTP; c = ClienteHTTP('76.1.0.10'); print(c.enviar_requisicao('GET', '/'))"
 
 #Testar servidor concorrente
-python3 -c "from src.cliente import ClienteHTTP; c = ClienteHTTP('76.1.0.11'); print(c.enviar_requisicao('GET', '/'))"
+PYTHONPATH=/app/src python3 -c "from src.cliente import ClienteHTTP; c = ClienteHTTP('76.1.0.11'); print(c.enviar_requisicao('GET', '/'))"
 
 #Ver resultados salvos
 ls -lh /app/resultados/
